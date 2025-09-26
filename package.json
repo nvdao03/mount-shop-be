@@ -7,6 +7,9 @@
     "dev": "npx nodemon",
     "build": "rimraf ./dist && tsc && tsc-alias",
     "start": "node dist/index.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
@@ -18,6 +21,8 @@
   "type": "commonjs",
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@types/pg": "^8.15.5",
+    "drizzle-kit": "^0.31.4",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -26,13 +31,15 @@
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "tsc-alias": "^1.8.16",
-    "tsx": "^4.20.5",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.1"
   },
   "dependencies": {
     "@types/express": "^5.0.3",
     "dotenv": "^17.2.2",
-    "express": "^4.21.2"
+    "drizzle-orm": "^0.44.5",
+    "express": "^4.21.2",
+    "pg": "^8.16.3"
   }
 }
