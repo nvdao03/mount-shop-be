@@ -8,6 +8,20 @@
       "when": 1758907936699,
       "tag": "0000_last_serpent_society",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1759242105490,
+      "tag": "0001_misty_carnage",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1759242232913,
+      "tag": "0002_bizarre_brood",
+      "breakpoints": true
     }
   ]
 }

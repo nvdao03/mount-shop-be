@@ -1,0 +1,20 @@
+export const AUTH_MESSAGE = {
+  EMAIL_INVALID: 'Email không hợp lệ',
+  EMAIL_REQUIRED: 'Vui lòng nhập email',
+  EMAIL_EXISTS: 'Email đã tồn tại',
+  EMAIL_NOT_EMPTY: 'Email không được để trống',
+  PASSWORD_INVALID_MIN_LENGTH: 'Mật khẩu phải có ít nhất 6 ký tự',
+  PASSWORD_INVALID_LENGTH: 'Mật khẩu phải có ít nhất 6 - 180 ký tự',
+  PASSWORD_REQUIRED: 'Vui lòng nhập mật khẩu',
+  LOGIN_FAILED: 'Đăng nhập thất bại, vui lòng kiểm tra lại thông tin',
+  FULLNAME_NOT_EMPTY: 'Tên không được để trống',
+  FULLNAME_INVALID_MIN_LENGTH: 'Họ và tên phải có ít nhất 10 ký tự',
+  FULLNAME_INVALID_LENGTH: 'Họ và tên phải có ít nhất 10 - 180 ký tự',
+  VALIDATION_ERROR: 'Dữ liệu không hợp lệ',
+  CONFIRM_PASSWORD_INVALID_LENGTH: 'Mật khẩu phải có ít nhất 6 - 180 ký tự',
+  CONFIRM_PASSWORD_INVALID: 'Mật khẩu nhập lại không khớp',
+  EMAIL_NOT_EXISTS: 'Email không tồn tại',
+  EMAIL_OR_PASSWORD_NOT_EXISTS: 'Email hoặc mật khẩu không chính xác',
+  REGISTER_SUCCESS: 'Đăng ký thành công, vui lòng kiểm tra email để kích hoạt tài khoản',
+  LOGIN_SUCCESS: 'Đăng nhập thành công'
+}
