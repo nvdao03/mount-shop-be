@@ -1,13 +1,17 @@
 import authService from '~/services/auth.service'
-import { AUTH_MESSAGE } from './../constants/message'
+import { AUTH_MESSAGE, USER_MESSAGE } from './../constants/message'
 import { checkSchema, ParamSchema } from 'express-validator'
 import { ErrorStatus } from '~/utils/Errors'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { db } from '~/configs/postgreSQL.config'
-import { users } from '~/db/schema'
+import { refresh_tokens, users } from '~/db/schema'
 import { and, eq } from 'drizzle-orm'
 import hashPassword from '~/utils/crypto'
 import { validate } from '~/utils/validation'
+import '../configs/env.config'
+import { verifyToken } from '~/utils/jwt'
+import { TokenPayload } from '~/requests/auth.request'
+import { JsonWebTokenError } from 'jsonwebtoken'
 
 // --- Common schema ---
 const passwordSchema: ParamSchema = {
@@ -115,6 +119,99 @@ export const loginValidator = validate(
         }
       },
       password: passwordSchema
+    },
+    ['body']
+  )
+)
+
+// --- Access token validator
+export const accessTokenValidator = validate(
+  checkSchema(
+    {
+      Authorization: {
+        isString: true,
+        trim: true,
+        custom: {
+          options: async (value: string, { req }) => {
+            const access_token = (value || '').split(' ')[1]
+            if (!access_token) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: AUTH_MESSAGE.ACCESS_TOKEN_NOT_EMPTY
+              })
+            }
+            try {
+              const decoded_access_token = await verifyToken({
+                token: access_token,
+                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+              })
+              const { user_id } = decoded_access_token
+              const [user] = await db.select().from(users).where(eq(users.id, user_id)).limit(1)
+              if (!user) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: AUTH_MESSAGE.ACCESS_TOKEN_NOT_EXISTS
+                })
+              }
+              req.decoded_access_token = decoded_access_token as TokenPayload
+            } catch (error) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: AUTH_MESSAGE.ACCESS_TOKEN_INVALID
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['headers']
+  )
+)
+
+// --- Refresh token validator ---
+export const refreshTokenValidator = validate(
+  checkSchema(
+    {
+      refresh_token: {
+        isString: true,
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: AUTH_MESSAGE.REFRESH_TOKEN_NOT_EMPTY
+              })
+            }
+            try {
+              const [decoded_refresh_token, [refresh_token]] = await Promise.all([
+                verifyToken({
+                  token: value,
+                  secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+                }),
+                db.select().from(refresh_tokens).where(eq(refresh_tokens.token, value)).limit(1)
+              ])
+              if (!refresh_token) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: AUTH_MESSAGE.REFRESH_TOKEN_NOT_EXISTS
+                })
+              }
+              req.decoded_refresh_token = decoded_refresh_token
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: AUTH_MESSAGE.REFRESH_TOKEN_INVALID
+                })
+              }
+              throw error
+            }
+            return true
+          }
+        }
+      }
     },
     ['body']
   )

@@ -1,12 +1,13 @@
 import { RegisterRequestBody, TokenPayload } from './../requests/auth.request'
 import { verifyToken } from './../utils/jwt'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enum'
 import { refresh_tokens, roles, users } from '~/db/schema'
 import { signToken } from '~/utils/jwt'
 import '../configs/env.config'
 import hashPassword from '~/utils/crypto'
+import { AUTH_MESSAGE } from '~/constants/message'
 
 class AuthService {
   // --- Sign Access Token ---
@@ -142,6 +143,7 @@ class AuthService {
     }
   }
 
+  // --- Login ---
   async login({ user_id, verify, role_id }: { user_id: number; verify: UserVerifyStatus; role_id: number }) {
     const [access_token, refresh_token] = await Promise.all([
       this.signAccessToken({ user_id, verify }),
@@ -170,6 +172,16 @@ class AuthService {
       decoded_access_token,
       decoded_refresh_token,
       role
+    }
+  }
+
+  // --- Logout ---
+  async logout({ user_id, refresh_token }: { user_id: number; refresh_token: string }) {
+    await db
+      .delete(refresh_tokens)
+      .where(and(eq(refresh_tokens.user_id, user_id), eq(refresh_tokens.token, refresh_token)))
+    return {
+      message: AUTH_MESSAGE.LOGOUT_SUCCESS
     }
   }
 }

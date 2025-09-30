@@ -16,5 +16,16 @@ export const AUTH_MESSAGE = {
   EMAIL_NOT_EXISTS: 'Email không tồn tại',
   EMAIL_OR_PASSWORD_NOT_EXISTS: 'Email hoặc mật khẩu không chính xác',
   REGISTER_SUCCESS: 'Đăng ký thành công, vui lòng kiểm tra email để kích hoạt tài khoản',
-  LOGIN_SUCCESS: 'Đăng nhập thành công'
+  LOGIN_SUCCESS: 'Đăng nhập thành công',
+  REFRESH_TOKEN_NOT_EMPTY: 'Refresh token không được để trống',
+  REFRESH_TOKEN_NOT_EXISTS: 'Refresh token không tồn tại',
+  REFRESH_TOKEN_INVALID: 'Refresh token không hợp lệ',
+  ACCESS_TOKEN_NOT_EMPTY: 'Access token không được để trống',
+  ACCESS_TOKEN_NOT_EXISTS: 'Access token không tồn tại',
+  ACCESS_TOKEN_INVALID: 'Access token không hợp lệ',
+  LOGOUT_SUCCESS: 'Đăng xuất thành công'
+}
+
+export const USER_MESSAGE = {
+  USER_NOT_EXISTS: 'Tài khoản không tồn tại'
 }

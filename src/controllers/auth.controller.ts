@@ -1,7 +1,7 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import { HTTP_STATUS } from '~/constants/httpStatus'
-import { LoginRequestBody, RegisterRequestBody } from '~/requests/auth.request'
+import { LoginRequestBody, LogoutRequestBody, RegisterRequestBody, TokenPayload } from '~/requests/auth.request'
 import authService from '~/services/auth.service'
 import { AUTH_MESSAGE } from '~/constants/message'
 import { User } from '~/db/schema'
@@ -62,4 +62,16 @@ export const loginController = async (
       }
     }
   })
+}
+
+// --- Logout ---
+export const logoutController = async (
+  req: Request<ParamsDictionary, any, LogoutRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { refresh_token } = req.body
+  const user_id = req.decoded_access_token.user_id
+  const result = await authService.logout({ user_id, refresh_token })
+  return res.status(HTTP_STATUS.OK).json(result)
 }
