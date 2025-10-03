@@ -41,7 +41,8 @@ export const AUTH_MESSAGE = {
   EMAIL_VERIFY_TOKEN_NOT_FOUND: 'Không tìm thấy email verify token',
   EMAIL_ALREADY_VERIFIED: 'Email đã được xác nhận trước đó',
   EMAIL_VERIFIED_SUCCESS: 'Xác thực email thành công',
-  USER_NOT_FOUND: 'Không tìm thấy tài khoản'
+  USER_NOT_FOUND: 'Không tìm thấy tài khoản',
+  REFRESH_TOKEN_SUCCESS: 'refresh token thành công'
 }
 
 export const USER_MESSAGE = {

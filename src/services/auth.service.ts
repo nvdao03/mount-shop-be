@@ -8,6 +8,7 @@ import { signToken } from '~/utils/jwt'
 import '../configs/env.config'
 import hashPassword from '~/utils/crypto'
 import { AUTH_MESSAGE } from '~/constants/message'
+import { accessTokenValidator } from '~/middlewares/auth.middleware'
 
 class AuthService {
   // --- Sign Access Token ---
@@ -58,8 +59,7 @@ class AuthService {
         },
         privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
         options: {
-          algorithm: 'HS256',
-          expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN as any
+          algorithm: 'HS256'
         }
       })
     }
@@ -314,6 +314,51 @@ class AuthService {
       decoded_refresh_token,
       user,
       role
+    }
+  }
+
+  // --- Refresh Token ---
+  async refreshToken({
+    user_id,
+    exp,
+    verify,
+    role,
+    refresh_token
+  }: {
+    user_id: number
+    verify: UserVerifyStatus
+    exp: number
+    role: string
+    refresh_token: string
+  }) {
+    const [new_access_token, new_refresh_token, [user]] = await Promise.all([
+      this.signAccessToken({ user_id, verify, role }),
+      this.signRefreshToken({ user_id, verify, role, exp }),
+      db.select().from(users).where(eq(users.id, user_id)).limit(1),
+      db.delete(refresh_tokens).where(and(eq(refresh_tokens.user_id, user_id), eq(refresh_tokens.token, refresh_token)))
+    ])
+    const [decoded_access_token, decoded_refresh_token] = await Promise.all<TokenPayload>([
+      verifyToken({
+        token: new_access_token,
+        secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+      }),
+      verifyToken({
+        token: new_refresh_token,
+        secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+      })
+    ])
+    await db.insert(refresh_tokens).values({
+      token: new_refresh_token,
+      user_id,
+      iat: new Date(decoded_refresh_token.iat * 1000),
+      exp: new Date(decoded_refresh_token.exp * 1000)
+    })
+    return {
+      new_access_token,
+      new_refresh_token,
+      decoded_access_token,
+      decoded_refresh_token,
+      user
     }
   }
 }

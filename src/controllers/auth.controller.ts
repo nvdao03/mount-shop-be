@@ -7,6 +7,7 @@ import {
   ForgotPasswordRequestBody,
   LoginRequestBody,
   LogoutRequestBody,
+  RefreshTokenRequestBody,
   RegisterRequestBody,
   ResetPasswordRequestBody,
   TokenPayload,
@@ -164,6 +165,35 @@ export const verifyEmailController = async (
       user: {
         id: user.id,
         role: role.name,
+        email: user.email,
+        full_name: user.full_name,
+        created_at: user.createdAt,
+        update_at: user.updatedAt
+      }
+    }
+  })
+}
+
+// --- Refresh Token ---
+export const refreshTokenController = async (
+  req: Request<ParamsDictionary, any, RefreshTokenRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id, exp, verify, role } = req.decoded_refresh_token as TokenPayload
+  const { refresh_token } = req.body
+  const result = await authService.refreshToken({ user_id, exp, verify, refresh_token, role })
+  const { decoded_access_token, decoded_refresh_token, new_access_token, new_refresh_token, user } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: AUTH_MESSAGE.REFRESH_TOKEN_SUCCESS,
+    data: {
+      access_token: new_access_token,
+      expires_access_token: decoded_access_token.exp,
+      refresh_token: new_refresh_token,
+      expries_refresh_token: decoded_refresh_token.exp,
+      user: {
+        id: user.id,
+        role: role,
         email: user.email,
         full_name: user.full_name,
         created_at: user.createdAt,

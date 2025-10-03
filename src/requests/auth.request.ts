@@ -1,7 +1,9 @@
+import { UserVerifyStatus } from '~/constants/enum'
+
 export interface TokenPayload {
   user_id: number
   token_type: string
-  verify: string
+  verify: UserVerifyStatus
   role: string
   iat: number
   exp: number
@@ -44,4 +46,8 @@ export interface ResetPasswordRequestBody {
 
 export interface VerifyEmailRequestBody {
   verify_email_token: string
+}
+
+export interface RefreshTokenRequestBody {
+  refresh_token: string
 }

@@ -4,6 +4,7 @@ import {
   forgotPasswordController,
   loginController,
   logoutController,
+  refreshTokenController,
   registerController,
   resetPasswordController,
   verifyEmailController,
@@ -46,5 +47,8 @@ router.post('/reset-password', resetPasswordValidator, wrapHandler(resetPassword
 
 // --- Verify email ---
 router.post('/verify-email', verifyEmailValidator, wrapHandler(verifyEmailController))
+
+// --- Refresh token ---
+router.post('/refresh-token', refreshTokenValidator, wrapHandler(refreshTokenController))
 
 export default router
