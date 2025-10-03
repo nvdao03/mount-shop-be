@@ -11,12 +11,21 @@ import { AUTH_MESSAGE } from '~/constants/message'
 
 class AuthService {
   // --- Sign Access Token ---
-  private async signAccessToken({ user_id, verify }: { user_id: number; verify: UserVerifyStatus }) {
+  private async signAccessToken({
+    user_id,
+    verify,
+    role
+  }: {
+    user_id: number
+    verify: UserVerifyStatus
+    role: string
+  }) {
     return signToken({
       payload: {
         user_id,
         token_type: TokenTypes.AccessToken,
-        verify
+        verify,
+        role
       },
       privateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string,
       options: {
@@ -30,10 +39,12 @@ class AuthService {
   private async signRefreshToken({
     user_id,
     verify,
-    exp
+    exp,
+    role
   }: {
     user_id: number
     verify: UserVerifyStatus
+    role: string
     exp?: number
   }) {
     if (exp) {
@@ -42,6 +53,7 @@ class AuthService {
           user_id,
           token_type: TokenTypes.RefreshToken,
           verify,
+          role,
           exp
         },
         privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
@@ -55,7 +67,8 @@ class AuthService {
       payload: {
         user_id,
         token_type: TokenTypes.RefreshToken,
-        verify
+        verify,
+        role
       },
       privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
       options: {
@@ -66,12 +79,21 @@ class AuthService {
   }
 
   // --- Sign Email Verify Token ---
-  private async signEmailVerifyToken({ user_id, verify }: { user_id: number; verify: UserVerifyStatus }) {
+  private async signEmailVerifyToken({
+    user_id,
+    verify,
+    role
+  }: {
+    user_id: number
+    verify: UserVerifyStatus
+    role: string
+  }) {
     return signToken({
       payload: {
         user_id,
         token_type: TokenTypes.EmailVerifyToken,
-        verify
+        verify,
+        role
       },
       privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string,
       options: {
@@ -82,12 +104,21 @@ class AuthService {
   }
 
   // --- Sign Forgot password Token ---
-  private async signForgotPasswordToken({ user_id, verify }: { user_id: number; verify: UserVerifyStatus }) {
+  private async signForgotPasswordToken({
+    user_id,
+    verify,
+    role
+  }: {
+    user_id: number
+    verify: UserVerifyStatus
+    role: string
+  }) {
     return signToken({
       payload: {
         user_id,
         token_type: TokenTypes.ForgotPasswordToken,
-        verify
+        verify,
+        role
       },
       privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
       options: {
@@ -115,12 +146,13 @@ class AuthService {
       })
     const email_verify_token = await this.signEmailVerifyToken({
       user_id: insertedUser.user_id,
-      verify: UserVerifyStatus.Unverifyed
+      verify: UserVerifyStatus.Unverifyed,
+      role: role.name
     })
     const user_id = insertedUser.user_id
     const [access_token, refresh_token] = await Promise.all([
-      this.signAccessToken({ user_id, verify: UserVerifyStatus.Unverifyed }),
-      this.signRefreshToken({ user_id, verify: UserVerifyStatus.Unverifyed })
+      this.signAccessToken({ user_id, verify: UserVerifyStatus.Unverifyed, role: role.name }),
+      this.signRefreshToken({ user_id, verify: UserVerifyStatus.Unverifyed, role: role.name })
     ])
     const [decoded_access_token, decoded_refresh_token] = await Promise.all<TokenPayload>([
       verifyToken({
@@ -161,9 +193,10 @@ class AuthService {
 
   // --- Login ---
   async login({ user_id, verify, role_id }: { user_id: number; verify: UserVerifyStatus; role_id: number }) {
+    const [role] = await db.select().from(roles).where(eq(roles.id, role_id)).limit(1)
     const [access_token, refresh_token] = await Promise.all([
-      this.signAccessToken({ user_id, verify }),
-      this.signRefreshToken({ user_id, verify })
+      this.signAccessToken({ user_id, verify, role: role.name }),
+      this.signRefreshToken({ user_id, verify, role: role.name })
     ])
     const [decoded_access_token, decoded_refresh_token] = await Promise.all<TokenPayload>([
       verifyToken({
@@ -181,7 +214,6 @@ class AuthService {
       iat: new Date(decoded_refresh_token.iat * 1000),
       exp: new Date(decoded_refresh_token.exp * 1000)
     })
-    const [role] = await db.select().from(roles).where(eq(roles.id, role_id)).limit(1)
     return {
       access_token,
       refresh_token,
@@ -216,8 +248,9 @@ class AuthService {
   }
 
   // --- Forgot Password ---
-  async forgotPassword({ user_id, verify }: { user_id: number; verify: UserVerifyStatus }) {
-    const forgot_password_token = await this.signForgotPasswordToken({ user_id, verify })
+  async forgotPassword({ user_id, verify, role_id }: { user_id: number; verify: UserVerifyStatus; role_id: number }) {
+    const [role] = await db.select({ name: roles.name }).from(roles).where(eq(roles.id, role_id)).limit(1)
+    const forgot_password_token = await this.signForgotPasswordToken({ user_id, verify, role: role.name })
     await db
       .update(users)
       .set({
@@ -245,6 +278,42 @@ class AuthService {
       .where(eq(users.id, user_id))
     return {
       message: AUTH_MESSAGE.RESET_PASSWORD_SUCCESS
+    }
+  }
+
+  // --- Verify Email ---
+  async verifyEmail({ user_id, verify, role_id }: { user_id: number; verify: UserVerifyStatus; role_id: number }) {
+    const [user] = await db
+      .update(users)
+      .set({
+        verify: UserVerifyStatus.Verifyed,
+        email_verify_token: '',
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, user_id))
+      .returning()
+    const [role] = await db.select().from(roles).where(eq(roles.id, role_id)).limit(1)
+    const [access_token, refresh_token] = await Promise.all([
+      this.signAccessToken({ user_id, role: role.name, verify }),
+      this.signRefreshToken({ user_id, role: role.name, verify })
+    ])
+    const [decoded_access_token, decoded_refresh_token] = await Promise.all<TokenPayload>([
+      verifyToken({
+        token: access_token,
+        secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+      }),
+      verifyToken({
+        token: refresh_token,
+        secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+      })
+    ])
+    return {
+      access_token,
+      refresh_token,
+      decoded_access_token,
+      decoded_refresh_token,
+      user,
+      role
     }
   }
 }

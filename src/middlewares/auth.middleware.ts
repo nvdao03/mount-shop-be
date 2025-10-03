@@ -397,3 +397,39 @@ export const resetPasswordValidator = validate(
     ['body']
   )
 )
+
+// --- Verify email validator ---
+export const verifyEmailValidator = validate(
+  checkSchema(
+    {
+      email_verify_token: {
+        isString: true,
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                message: AUTH_MESSAGE.EMAIL_VERIFY_TOKEN_NOT_EMPTY,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+            }
+            try {
+              const decoded_email_verify_token = await verifyToken({
+                token: value,
+                secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+              })
+              req.decoded_email_verify_token = decoded_email_verify_token
+            } catch (error) {
+              throw new ErrorStatus({
+                message: AUTH_MESSAGE.EMAIL_VERIFY_TOKEN_INVALID,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

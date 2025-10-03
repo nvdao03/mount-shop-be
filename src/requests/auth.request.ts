@@ -2,6 +2,7 @@ export interface TokenPayload {
   user_id: number
   token_type: string
   verify: string
+  role: string
   iat: number
   exp: number
 }
@@ -39,4 +40,8 @@ export interface VerifyForgotPasswordRequestBody {
 export interface ResetPasswordRequestBody {
   password: string
   confirm_password: string
+}
+
+export interface VerifyEmailRequestBody {
+  verify_email_token: string
 }

@@ -1,4 +1,5 @@
 import { ParamsDictionary } from 'express-serve-static-core'
+import { eq } from 'drizzle-orm'
 import { NextFunction, Request, Response } from 'express'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import {
@@ -9,12 +10,14 @@ import {
   RegisterRequestBody,
   ResetPasswordRequestBody,
   TokenPayload,
+  VerifyEmailRequestBody,
   VerifyForgotPasswordRequestBody
 } from '~/requests/auth.request'
 import authService from '~/services/auth.service'
 import { AUTH_MESSAGE } from '~/constants/message'
-import { User } from '~/db/schema'
+import { User, users } from '~/db/schema'
 import { UserVerifyStatus } from '~/constants/enum'
+import { db } from '~/configs/postgreSQL.config'
 
 // --- Register ---
 export const registerController = async (
@@ -103,8 +106,8 @@ export const forgotPasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id: user_id, verify } = req.user as User
-  const result = await authService.forgotPassword({ user_id, verify: verify as UserVerifyStatus })
+  const { id: user_id, verify, role_id } = req.user as User
+  const result = await authService.forgotPassword({ user_id, verify: verify as UserVerifyStatus, role_id })
   return res.status(HTTP_STATUS.OK).json(result)
 }
 
@@ -127,4 +130,45 @@ export const resetPasswordController = async (
   const { user_id } = req.decoded_forgot_password_token as TokenPayload
   const result = await authService.resetPassword({ user_id, password })
   return res.status(HTTP_STATUS.OK).json(result)
+}
+
+// --- Verify Email ---
+export const verifyEmailController = async (
+  req: Request<ParamsDictionary, any, VerifyEmailRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_email_verify_token as TokenPayload
+  const [user] = await db.select().from(users).where(eq(users.id, user_id)).limit(1)
+  if (!user) {
+    return res.status(HTTP_STATUS.NOT_FOUND).json({
+      message: AUTH_MESSAGE.USER_NOT_FOUND
+    })
+  }
+  if (user.email_verify_token === '') {
+    return res.status(HTTP_STATUS.OK).json({ message: AUTH_MESSAGE.EMAIL_ALREADY_VERIFIED })
+  }
+  const result = await authService.verifyEmail({
+    user_id,
+    verify: user.verify as UserVerifyStatus,
+    role_id: user.role_id
+  })
+  const { access_token, refresh_token, role, decoded_access_token, decoded_refresh_token } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: AUTH_MESSAGE.EMAIL_VERIFIED_SUCCESS,
+    data: {
+      access_token,
+      expires_access_token: decoded_access_token.exp,
+      refresh_token,
+      expries_refresh_token: decoded_refresh_token.exp,
+      user: {
+        id: user.id,
+        role: role.name,
+        email: user.email,
+        full_name: user.full_name,
+        created_at: user.createdAt,
+        update_at: user.updatedAt
+      }
+    }
+  })
 }

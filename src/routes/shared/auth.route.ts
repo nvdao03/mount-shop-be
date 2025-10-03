@@ -6,6 +6,7 @@ import {
   logoutController,
   registerController,
   resetPasswordController,
+  verifyEmailController,
   verifyForgotPasswordController
 } from '~/controllers/auth.controller'
 import {
@@ -16,6 +17,7 @@ import {
   refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
+  verifyEmailValidator,
   verifyForgotPasswordValidator,
   verifyUserValidator
 } from '~/middlewares/auth.middleware'
@@ -41,5 +43,8 @@ router.post(
 router.post('/forgot-password', forgotPasswordValidator, wrapHandler(forgotPasswordController))
 router.post('/verify-forgot-password', verifyForgotPasswordValidator, wrapHandler(verifyForgotPasswordController))
 router.post('/reset-password', resetPasswordValidator, wrapHandler(resetPasswordController))
+
+// --- Verify email ---
+router.post('/verify-email', verifyEmailValidator, wrapHandler(verifyEmailController))
 
 export default router

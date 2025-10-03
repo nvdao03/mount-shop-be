@@ -33,7 +33,15 @@ export const AUTH_MESSAGE = {
   FORGOT_PASSWORD_TOKEN_NOT_EXISTS: 'Forgot token không tồn tại',
   VERIFY_FORGOT_PASSWORD_SUCCESS: 'Xác thực Forgot token hợp lệ',
   FORGOT_PASSWORD_TOKEN_NOT_FOUND: 'Không tìm thấy Forgot token',
-  RESET_PASSWORD_SUCCESS: 'Đổi mật khâu thành công'
+  RESET_PASSWORD_SUCCESS: 'Đổi mật khâu thành công',
+  EMAIL_VERIFY_TOKEN_NOT_EMPTY: 'Email verify token không được để trống',
+  USER_NOT_EXISTS: 'Tài khoản không tồn tại',
+  EMAIL_VERIFY_TOKEN_INVALID: 'Email verify token không hợp lệ',
+  EMAIL_VERIFY_TOKEN_NOT_EXISTS: 'Email verify token không tồn tại',
+  EMAIL_VERIFY_TOKEN_NOT_FOUND: 'Không tìm thấy email verify token',
+  EMAIL_ALREADY_VERIFIED: 'Email đã được xác nhận trước đó',
+  EMAIL_VERIFIED_SUCCESS: 'Xác thực email thành công',
+  USER_NOT_FOUND: 'Không tìm thấy tài khoản'
 }
 
 export const USER_MESSAGE = {
