@@ -23,9 +23,20 @@ export const AUTH_MESSAGE = {
   ACCESS_TOKEN_NOT_EMPTY: 'Access token không được để trống',
   ACCESS_TOKEN_NOT_EXISTS: 'Access token không tồn tại',
   ACCESS_TOKEN_INVALID: 'Access token không hợp lệ',
-  LOGOUT_SUCCESS: 'Đăng xuất thành công'
+  LOGOUT_SUCCESS: 'Đăng xuất thành công',
+  PASSWORD_NOT_EMPTY: 'Mật khẩu không được để trống',
+  PASSWORD_NOT_EXISTS: 'Mật khẩu không tồn tại',
+  CHANGE_PASSWORD_SUCCESS: 'Đổi mật khẩu thành công',
+  USER_NOT_VERIFIED: 'Tài khoản chưa được xác thực',
+  FORGOT_PASSWORD_SUCCESS: 'Vui lòng kiểm tra email để đổi mật khẩu',
+  FORGOT_PASSWORD_TOKEN_NOT_EMPTY: 'Forgot token không được để trống',
+  FORGOT_PASSWORD_TOKEN_NOT_EXISTS: 'Forgot token không tồn tại',
+  VERIFY_FORGOT_PASSWORD_SUCCESS: 'Xác thực Forgot token hợp lệ',
+  FORGOT_PASSWORD_TOKEN_NOT_FOUND: 'Không tìm thấy Forgot token',
+  RESET_PASSWORD_SUCCESS: 'Đổi mật khâu thành công'
 }
 
 export const USER_MESSAGE = {
-  USER_NOT_EXISTS: 'Tài khoản không tồn tại'
+  USER_NOT_EXISTS: 'Tài khoản không tồn tại',
+  USER_NOT_FOUND: 'Không tìm thấy tài khoản'
 }

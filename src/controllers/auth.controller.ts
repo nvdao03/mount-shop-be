@@ -1,7 +1,16 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import { HTTP_STATUS } from '~/constants/httpStatus'
-import { LoginRequestBody, LogoutRequestBody, RegisterRequestBody, TokenPayload } from '~/requests/auth.request'
+import {
+  ChangePasswordRequestBody,
+  ForgotPasswordRequestBody,
+  LoginRequestBody,
+  LogoutRequestBody,
+  RegisterRequestBody,
+  ResetPasswordRequestBody,
+  TokenPayload,
+  VerifyForgotPasswordRequestBody
+} from '~/requests/auth.request'
 import authService from '~/services/auth.service'
 import { AUTH_MESSAGE } from '~/constants/message'
 import { User } from '~/db/schema'
@@ -73,5 +82,49 @@ export const logoutController = async (
   const { refresh_token } = req.body
   const user_id = req.decoded_access_token.user_id
   const result = await authService.logout({ user_id, refresh_token })
+  return res.status(HTTP_STATUS.OK).json(result)
+}
+
+// --- Change Password ---
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { new_password } = req.body
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await authService.changePassword({ user_id, new_password })
+  return res.status(HTTP_STATUS.OK).json(result)
+}
+
+// --- Forgot Password ---
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id: user_id, verify } = req.user as User
+  const result = await authService.forgotPassword({ user_id, verify: verify as UserVerifyStatus })
+  return res.status(HTTP_STATUS.OK).json(result)
+}
+
+// --- Verify Forgot Password ---
+export const verifyForgotPasswordController = (
+  req: Request<ParamsDictionary, any, VerifyForgotPasswordRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  return res.status(HTTP_STATUS.OK).json({ message: AUTH_MESSAGE.VERIFY_FORGOT_PASSWORD_SUCCESS })
+}
+
+// --- Reset Password ---
+export const resetPasswordController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { password } = req.body
+  const { user_id } = req.decoded_forgot_password_token as TokenPayload
+  const result = await authService.resetPassword({ user_id, password })
   return res.status(HTTP_STATUS.OK).json(result)
 }

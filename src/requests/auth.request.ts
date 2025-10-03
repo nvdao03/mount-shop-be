@@ -1,7 +1,7 @@
 export interface TokenPayload {
   user_id: number
   token_type: string
-  verify: number
+  verify: string
   iat: number
   exp: number
 }
@@ -20,4 +20,23 @@ export interface LoginRequestBody {
 
 export interface LogoutRequestBody {
   refresh_token: string
+}
+
+export interface ChangePasswordRequestBody {
+  current_password: string
+  new_password: string
+  confirm_password: string
+}
+
+export interface ForgotPasswordRequestBody {
+  email: string
+}
+
+export interface VerifyForgotPasswordRequestBody {
+  forgot_password_token: string
+}
+
+export interface ResetPasswordRequestBody {
+  password: string
+  confirm_password: string
 }

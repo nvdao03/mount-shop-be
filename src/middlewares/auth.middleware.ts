@@ -12,8 +12,12 @@ import '../configs/env.config'
 import { verifyToken } from '~/utils/jwt'
 import { TokenPayload } from '~/requests/auth.request'
 import { JsonWebTokenError } from 'jsonwebtoken'
+import { NextFunction, Request, Response } from 'express'
+import { UserVerifyStatus } from '~/constants/enum'
 
 // --- Common schema ---
+const emailSchema: ParamSchema = {}
+
 const passwordSchema: ParamSchema = {
   isString: true,
   isLength: {
@@ -42,6 +46,52 @@ const confirmPasswordSchema: ParamSchema = {
         throw new ErrorStatus({
           message: AUTH_MESSAGE.CONFIRM_PASSWORD_INVALID,
           status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+        })
+      }
+      return true
+    }
+  }
+}
+
+const forgotPasswordTokenSchema: ParamSchema = {
+  isString: true,
+  trim: true,
+  custom: {
+    options: async (value: string, { req }) => {
+      if (!value || value.trim() === '') {
+        throw new ErrorStatus({
+          status: HTTP_STATUS.UNAUTHORIZED,
+          message: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_NOT_EMPTY
+        })
+      }
+      try {
+        const decoded_forgot_password_token = await verifyToken({
+          token: value,
+          secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+        })
+        const { user_id } = decoded_forgot_password_token as TokenPayload
+        const [user] = await db
+          .select({ forgot_password_token: users.forgot_password_token })
+          .from(users)
+          .where(eq(users.id, user_id))
+          .limit(1)
+        if (!user) {
+          throw new ErrorStatus({
+            status: HTTP_STATUS.UNAUTHORIZED,
+            message: USER_MESSAGE.USER_NOT_FOUND
+          })
+        }
+        if (user.forgot_password_token !== value) {
+          throw new ErrorStatus({
+            status: HTTP_STATUS.UNAUTHORIZED,
+            message: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_NOT_EXISTS
+          })
+        }
+        req.decoded_forgot_password_token = decoded_forgot_password_token
+      } catch (error) {
+        throw new ErrorStatus({
+          status: HTTP_STATUS.UNAUTHORIZED,
+          message: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_NOT_FOUND
         })
       }
       return true
@@ -212,6 +262,137 @@ export const refreshTokenValidator = validate(
           }
         }
       }
+    },
+    ['body']
+  )
+)
+
+// --- Change password validator ---
+export const changePasswordValidator = validate(
+  checkSchema(
+    {
+      current_password: {
+        isString: true,
+        isLength: {
+          options: {
+            min: 6,
+            max: 180
+          },
+          errorMessage: AUTH_MESSAGE.PASSWORD_INVALID_LENGTH
+        },
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                message: AUTH_MESSAGE.PASSWORD_NOT_EMPTY,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+            }
+            const password = hashPassword(value)
+            const user_id = req.decoded_access_token.user_id
+            const [user] = await db
+              .select()
+              .from(users)
+              .where(and(eq(users.id, user_id), eq(users.password, password)))
+            if (!user) {
+              throw new ErrorStatus({
+                message: AUTH_MESSAGE.PASSWORD_NOT_EXISTS,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+            }
+            return true
+          }
+        }
+      },
+      new_password: passwordSchema,
+      confirm_password: {
+        isString: true,
+        isLength: {
+          options: {
+            min: 6,
+            max: 180
+          },
+          errorMessage: AUTH_MESSAGE.CONFIRM_PASSWORD_INVALID_LENGTH
+        },
+        trim: true,
+        custom: {
+          options: (value, { req }) => {
+            if (value !== req.body.new_password) {
+              throw new ErrorStatus({
+                message: AUTH_MESSAGE.CONFIRM_PASSWORD_INVALID,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+// --- Verify User ---
+export const verifyUserValidator = async (req: Request, res: Response, next: NextFunction) => {
+  const { verify } = req.decoded_access_token as TokenPayload
+  if (verify !== UserVerifyStatus.Verifyed) {
+    return next(
+      new ErrorStatus({
+        message: AUTH_MESSAGE.USER_NOT_VERIFIED,
+        status: HTTP_STATUS.UNAUTHORIZED
+      })
+    )
+  }
+  next()
+}
+
+// --- Forgot password validator ---
+export const forgotPasswordValidator = validate(
+  checkSchema(
+    {
+      email: {
+        isEmail: true,
+        notEmpty: {
+          errorMessage: AUTH_MESSAGE.EMAIL_NOT_EMPTY
+        },
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            const [user] = await db.select().from(users).where(eq(users.email, value)).limit(1)
+            if (!user) {
+              throw new ErrorStatus({
+                message: AUTH_MESSAGE.EMAIL_NOT_EXISTS,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+            }
+            req.user = user
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+// --- Verify forgot password validator ---
+export const verifyForgotPasswordValidator = validate(
+  checkSchema(
+    {
+      forgot_password_token: forgotPasswordTokenSchema
+    },
+    ['body']
+  )
+)
+
+// --- Reset password validator ---
+export const resetPasswordValidator = validate(
+  checkSchema(
+    {
+      password: passwordSchema,
+      confirm_password: confirmPasswordSchema,
+      forgot_password_token: forgotPasswordTokenSchema
     },
     ['body']
   )

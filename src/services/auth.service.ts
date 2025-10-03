@@ -81,6 +81,22 @@ class AuthService {
     })
   }
 
+  // --- Sign Forgot password Token ---
+  private async signForgotPasswordToken({ user_id, verify }: { user_id: number; verify: UserVerifyStatus }) {
+    return signToken({
+      payload: {
+        user_id,
+        token_type: TokenTypes.ForgotPasswordToken,
+        verify
+      },
+      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
+      options: {
+        algorithm: 'HS256',
+        expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN as any
+      }
+    })
+  }
+
   // --- Check Email Exists ---
   async checkEmailExists(email: string) {
     const [user] = await db.select({ email: users.email }).from(users).where(eq(users.email, email)).limit(1)
@@ -182,6 +198,53 @@ class AuthService {
       .where(and(eq(refresh_tokens.user_id, user_id), eq(refresh_tokens.token, refresh_token)))
     return {
       message: AUTH_MESSAGE.LOGOUT_SUCCESS
+    }
+  }
+
+  // --- Change Password ---
+  async changePassword({ user_id, new_password }: { user_id: number; new_password: string }) {
+    await db
+      .update(users)
+      .set({
+        password: hashPassword(new_password),
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, user_id))
+    return {
+      message: AUTH_MESSAGE.CHANGE_PASSWORD_SUCCESS
+    }
+  }
+
+  // --- Forgot Password ---
+  async forgotPassword({ user_id, verify }: { user_id: number; verify: UserVerifyStatus }) {
+    const forgot_password_token = await this.signForgotPasswordToken({ user_id, verify })
+    await db
+      .update(users)
+      .set({
+        forgot_password_token,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, user_id))
+    // Gỉa đinh gửi token về email
+    console.log(forgot_password_token)
+    return {
+      message: AUTH_MESSAGE.FORGOT_PASSWORD_SUCCESS
+    }
+  }
+
+  // --- Reset password ---
+  async resetPassword({ user_id, password }: { user_id: number; password: string }) {
+    const passwordInserted = hashPassword(password)
+    await db
+      .update(users)
+      .set({
+        password: passwordInserted,
+        forgot_password_token: '',
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, user_id))
+    return {
+      message: AUTH_MESSAGE.RESET_PASSWORD_SUCCESS
     }
   }
 }
