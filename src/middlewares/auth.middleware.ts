@@ -16,8 +16,6 @@ import { NextFunction, Request, Response } from 'express'
 import { Roles, UserVerifyStatus } from '~/constants/enum'
 
 // --- Common schema ---
-const emailSchema: ParamSchema = {}
-
 const passwordSchema: ParamSchema = {
   isString: true,
   isLength: {

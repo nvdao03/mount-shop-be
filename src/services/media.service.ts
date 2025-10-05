@@ -16,9 +16,9 @@ class MediaService {
     const result = await Promise.all(
       files.map(async (file) => {
         const newFileName = handleGetFileName(file.newFilename)
-        const newFileFullName = `${newFileName}.jpg`
-        const newPath = path.resolve(UPLOAD_IMAGE, `${newFileName}.jpg`)
-        await sharp(file.filepath).jpeg({ quality: 100 }).toFile(newPath)
+        const newFileFullName = `${newFileName}.png`
+        const newPath = path.resolve(UPLOAD_IMAGE, `${newFileName}.png`)
+        await sharp(file.filepath).png({ quality: 100 }).toFile(newPath)
         const s3 = await uploadFileToS3({
           fileName: 'images/' + newFileFullName,
           filePath: newPath,

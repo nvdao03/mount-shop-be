@@ -1,4 +1,5 @@
 import { InferModel } from 'drizzle-orm'
+import { primaryKey } from 'drizzle-orm/pg-core'
 import { timestamp } from 'drizzle-orm/pg-core'
 import { serial, pgEnum, varchar, pgTable, integer } from 'drizzle-orm/pg-core'
 
@@ -42,5 +43,40 @@ export const refresh_tokens = pgTable('refresh_tokens', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 })
 
+export const categories = pgTable('caregories', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 180 }).notNull().unique(),
+  image: varchar('image', { length: 255 }).notNull(),
+  createAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
+
+export const brands = pgTable('brands', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 180 }).notNull().unique(),
+  image: varchar('image', { length: 255 }).notNull(),
+  createAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
+
+export const brands_categories = pgTable(
+  'brands_categories',
+  {
+    id: serial('id').unique().notNull(),
+    brand_id: integer('brand_id').references(() => brands.id, { onDelete: 'cascade' }),
+    category_id: integer('category_id').references(() => categories.id, { onDelete: 'cascade' }),
+    createAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.brand_id, table.category_id] })
+  })
+)
+
 // --- Types ---
+export type Role = InferModel<typeof roles>
 export type User = InferModel<typeof users>
+export type RefreshToken = InferModel<typeof refresh_tokens>
+export type Categories = InferModel<typeof categories>
+export type Brands = InferModel<typeof brands>
+export type BrandsCategories = InferModel<typeof brands_categories>

@@ -54,3 +54,18 @@ export const USER_MESSAGE = {
 export const MEDIA_MESSAGE = {
   UPLOAD_IMAGE_SUCCESS: 'Upload ảnh thành công'
 }
+
+export const CATEGORY_MESSAGE = {
+  CATEGORY_NOT_FOUND: 'Không tìm thấy danh mục',
+  CATEGORY_NOT_EXISTS: 'Danh mục không tồn tại',
+  CATEGORY_NAME_NOT_EMPTY: 'Tên danh mục không được để trống',
+  CATEGORY_NAME_INVALID_LENGTH: 'Tên danh mục phải có ít nhất 18 - 180 ký tự',
+  CATEGORY_IMAGE_NOT_EMPTY: 'Ảnh danh mục không được để trống',
+  CATEGORY_IMAGE_INVALID: 'Ảnh danh mục không hợp lệ',
+  CATEGORY_NAME_EXISTS: 'Tên danh mục đã tồn tại',
+  ADD_CATEGORY_SUCCESS: 'Thêm danh mục thành công',
+  CATEGORY_ID_NOT_EMPTY: 'ID danh mục không được để trống',
+  CATEGORY_INVALID_ID: 'ID danh mục không hợp lệ',
+  UPDATE_CATEGORY_SUCCESS: 'Chỉnh sửa danh mục thành công',
+  DELETE_CATEGORY_SUCCESS: 'Xóa danh mục thành công'
+}
