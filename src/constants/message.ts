@@ -50,3 +50,7 @@ export const USER_MESSAGE = {
   USER_NOT_EXISTS: 'Tài khoản không tồn tại',
   USER_NOT_FOUND: 'Không tìm thấy tài khoản'
 }
+
+export const MEDIA_MESSAGE = {
+  UPLOAD_IMAGE_SUCCESS: 'Upload ảnh thành công'
+}
