@@ -2,7 +2,7 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import categoryService from '~/services/category.service'
-import { AddCategoryRequestBody, UpdateCategoryRequestBody } from '~/requests/category.request'
+import { AddCategoryRequestBody, CategoryQueryParams, UpdateCategoryRequestBody } from '~/requests/category.request'
 import { CATEGORY_MESSAGE } from '~/constants/message'
 
 // --- Add Category ---
@@ -43,5 +43,27 @@ export const deleteCategoryController = async (
   return res.status(HTTP_STATUS.OK).json({
     message: CATEGORY_MESSAGE.DELETE_CATEGORY_SUCCESS,
     data: result
+  })
+}
+
+// --- Get All Category ---
+export const getCategoryAllController = async (
+  req: Request<ParamsDictionary, any, any, CategoryQueryParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  const limit = Number(req.query.limit as string)
+  const page = Number(req.query.page as string)
+  const result = await categoryService.getCategoryAll({ limit, page })
+  return res.status(HTTP_STATUS.OK).json({
+    message: CATEGORY_MESSAGE.GET_CATEGORY_ALL_SUCCESS,
+    data: {
+      categories: result.data,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total_page: result.total_page
+      }
+    }
   })
 }

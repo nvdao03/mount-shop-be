@@ -7,3 +7,8 @@ export interface UpdateCategoryRequestBody {
   name?: string
   image?: string
 }
+
+export interface CategoryQueryParams {
+  limit: string
+  page: string
+}

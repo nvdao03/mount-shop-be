@@ -67,5 +67,6 @@ export const CATEGORY_MESSAGE = {
   CATEGORY_ID_NOT_EMPTY: 'ID danh mục không được để trống',
   CATEGORY_INVALID_ID: 'ID danh mục không hợp lệ',
   UPDATE_CATEGORY_SUCCESS: 'Chỉnh sửa danh mục thành công',
-  DELETE_CATEGORY_SUCCESS: 'Xóa danh mục thành công'
+  DELETE_CATEGORY_SUCCESS: 'Xóa danh mục thành công',
+  GET_CATEGORY_ALL_SUCCESS: 'Lấy danh sách danh mục thành công'
 }
