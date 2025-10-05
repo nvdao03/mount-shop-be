@@ -13,7 +13,7 @@ import { verifyToken } from '~/utils/jwt'
 import { TokenPayload } from '~/requests/auth.request'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
-import { UserVerifyStatus } from '~/constants/enum'
+import { Roles, UserVerifyStatus } from '~/constants/enum'
 
 // --- Common schema ---
 const emailSchema: ParamSchema = {}
@@ -433,3 +433,17 @@ export const verifyEmailValidator = validate(
     ['body']
   )
 )
+
+// --- Verify admin validator ---
+export const verifyAdminValidator = async (req: Request, res: Response, next: NextFunction) => {
+  const { role } = req.decoded_access_token as TokenPayload
+  if (role !== Roles.Admin) {
+    return next(
+      new ErrorStatus({
+        message: AUTH_MESSAGE.USER_NOT_ADMIN,
+        status: HTTP_STATUS.UNAUTHORIZED
+      })
+    )
+  }
+  return next()
+}

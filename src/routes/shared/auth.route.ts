@@ -51,4 +51,7 @@ router.post('/verify-email', verifyEmailValidator, wrapHandler(verifyEmailContro
 // --- Refresh token ---
 router.post('/refresh-token', refreshTokenValidator, wrapHandler(refreshTokenController))
 
+// --- Google Oauth ---
+router.get('/oauth/google')
+
 export default router

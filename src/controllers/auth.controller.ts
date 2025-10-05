@@ -107,8 +107,8 @@ export const forgotPasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id: user_id, verify, role_id } = req.user as User
-  const result = await authService.forgotPassword({ user_id, verify: verify as UserVerifyStatus, role_id })
+  const { id: user_id, verify, role_id, email } = req.user as User
+  const result = await authService.forgotPassword({ user_id, verify: verify as UserVerifyStatus, role_id, email })
   return res.status(HTTP_STATUS.OK).json(result)
 }
 

@@ -36,6 +36,7 @@
     "typescript-eslint": "^8.44.1"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.901.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",

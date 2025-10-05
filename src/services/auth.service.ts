@@ -9,6 +9,7 @@ import '../configs/env.config'
 import hashPassword from '~/utils/crypto'
 import { AUTH_MESSAGE } from '~/constants/message'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
+import { sendEmail, sendForgotPasswordEmail, sendVerifyEmail } from '~/utils/email'
 
 class AuthService {
   // --- Sign Access Token ---
@@ -181,6 +182,7 @@ class AuthService {
         exp: new Date(decoded_refresh_token.exp * 1000)
       })
     ])
+    await sendVerifyEmail({ email_verify_token: email_verify_token, toAddress: email })
     return {
       access_token,
       refresh_token,
@@ -248,7 +250,17 @@ class AuthService {
   }
 
   // --- Forgot Password ---
-  async forgotPassword({ user_id, verify, role_id }: { user_id: number; verify: UserVerifyStatus; role_id: number }) {
+  async forgotPassword({
+    user_id,
+    verify,
+    role_id,
+    email
+  }: {
+    user_id: number
+    verify: UserVerifyStatus
+    role_id: number
+    email: string
+  }) {
     const [role] = await db.select({ name: roles.name }).from(roles).where(eq(roles.id, role_id)).limit(1)
     const forgot_password_token = await this.signForgotPasswordToken({ user_id, verify, role: role.name })
     await db
@@ -258,8 +270,7 @@ class AuthService {
         updatedAt: new Date()
       })
       .where(eq(users.id, user_id))
-    // Gỉa đinh gửi token về email
-    console.log(forgot_password_token)
+    await sendForgotPasswordEmail({ forgot_password_token, toAddress: email })
     return {
       message: AUTH_MESSAGE.FORGOT_PASSWORD_SUCCESS
     }
