@@ -85,18 +85,8 @@ export const addCategoryValidator = validate(
   )
 )
 
-// --- Update category validator ---
-export const updateCategoryValidator = validate(
-  checkSchema(
-    {
-      category_id: categoryIdSchema
-    },
-    ['params']
-  )
-)
-
-// --- Delete category validator ---
-export const deleteCategoryValidator = validate(
+// --- Check category id validator ---
+export const checkCategoryId = validate(
   checkSchema(
     {
       category_id: categoryIdSchema

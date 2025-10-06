@@ -43,11 +43,11 @@ export const refresh_tokens = pgTable('refresh_tokens', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 })
 
-export const categories = pgTable('caregories', {
+export const categories = pgTable('categories', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 180 }).notNull().unique(),
   image: varchar('image', { length: 255 }).notNull(),
-  createAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 })
 
@@ -55,17 +55,16 @@ export const brands = pgTable('brands', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 180 }).notNull().unique(),
   image: varchar('image', { length: 255 }).notNull(),
-  createAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 })
 
 export const brands_categories = pgTable(
   'brands_categories',
   {
-    id: serial('id').unique().notNull(),
     brand_id: integer('brand_id').references(() => brands.id, { onDelete: 'cascade' }),
     category_id: integer('category_id').references(() => categories.id, { onDelete: 'cascade' }),
-    createAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
   },
   (table) => ({

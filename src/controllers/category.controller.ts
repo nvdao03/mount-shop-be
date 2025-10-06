@@ -67,3 +67,17 @@ export const getCategoryAllController = async (
     }
   })
 }
+
+// --- Get Category Detail ---
+export const getCategoryDetailController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { category_id } = req.params
+  const result = await categoryService.getCategoryDetail(Number(category_id))
+  return res.status(HTTP_STATUS.OK).json({
+    message: CATEGORY_MESSAGE.GET_CATEGORY_DETAIL_SUCCESS,
+    data: result
+  })
+}

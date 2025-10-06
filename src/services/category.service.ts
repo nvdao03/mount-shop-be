@@ -17,7 +17,7 @@ class CategoryService {
   async updateCategory(category_id: number, data: UpdateCategoryRequestBody) {
     const [category] = await db
       .update(categories)
-      .set({ ...data })
+      .set({ ...data, updatedAt: new Date() })
       .where(eq(categories.id, category_id))
       .returning()
     return category
@@ -51,6 +51,12 @@ class CategoryService {
       limit,
       total_page
     }
+  }
+
+  // --- Get Category Detail ---
+  async getCategoryDetail(category_id: number) {
+    const [category] = await db.select().from(categories).where(eq(categories.id, category_id)).limit(1)
+    return category
   }
 }
 

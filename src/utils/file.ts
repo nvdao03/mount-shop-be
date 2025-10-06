@@ -16,8 +16,8 @@ export const initFolder = () => {
 export const handleUploadImage = (req: Request) => {
   const form = formidable({
     uploadDir: UPLOAD_IMAGE_TEMP_DIR,
-    maxFiles: 5,
-    maxFileSize: 7 * 1024 * 1024,
+    maxFiles: 6,
+    maxFileSize: 10 * 1024 * 1024,
     keepExtensions: true,
     filter: ({ name, originalFilename, mimetype }) => {
       const valid = name === 'image' && Boolean(mimetype?.includes('image/'))

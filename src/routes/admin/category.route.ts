@@ -2,14 +2,11 @@ import { Router } from 'express'
 import {
   addCategoryController,
   deleteCategoryController,
+  getCategoryDetailController,
   updateCategoryController
 } from '~/controllers/category.controller'
 import { accessTokenValidator, verifyAdminValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
-import {
-  addCategoryValidator,
-  deleteCategoryValidator,
-  updateCategoryValidator
-} from '~/middlewares/category.middleware'
+import { addCategoryValidator, checkCategoryId } from '~/middlewares/category.middleware'
 import { wrapHandler } from '~/utils/wrapHanler'
 
 const router = Router()
@@ -30,7 +27,7 @@ router.put(
   accessTokenValidator,
   verifyUserValidator,
   verifyAdminValidator,
-  updateCategoryValidator,
+  checkCategoryId,
   wrapHandler(updateCategoryController)
 )
 
@@ -40,8 +37,18 @@ router.delete(
   accessTokenValidator,
   verifyUserValidator,
   verifyAdminValidator,
-  deleteCategoryValidator,
+  checkCategoryId,
   wrapHandler(deleteCategoryController)
+)
+
+// --- Get Category Detail ---
+router.get(
+  '/:category_id',
+  accessTokenValidator,
+  verifyUserValidator,
+  verifyAdminValidator,
+  checkCategoryId,
+  wrapHandler(getCategoryDetailController)
 )
 
 export default router
