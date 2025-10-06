@@ -1,10 +1,9 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
-import { AddBrandRequestBody } from './../requests/brand.request'
+import { AddBrandRequestBody, UpdateBrandRequestBody } from './../requests/brand.request'
 import brandService from '~/services/brand.service'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { BRAND_MESSAGE } from '~/constants/message'
-import { create } from 'lodash'
 
 // --- Add Brand ---
 export const addBrandController = async (
@@ -24,5 +23,18 @@ export const addBrandController = async (
       createAt: brand.createdAt,
       updateAt: brand.updatedAt
     }
+  })
+}
+
+export const updateBrandController = async (
+  req: Request<ParamsDictionary, any, UpdateBrandRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { brand_id } = req.params
+  const result = await brandService.updateBrand(Number(brand_id), req.body)
+  return res.status(HTTP_STATUS.OK).json({
+    message: BRAND_MESSAGE.UPDATE_BRAND_SUCCESS,
+    data: result
   })
 }

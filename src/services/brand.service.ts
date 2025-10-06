@@ -1,7 +1,7 @@
 import { db } from '~/configs/postgreSQL.config'
 import { eq } from 'drizzle-orm'
 import { brands, brands_categories, categories } from '~/db/schema'
-import { AddBrandRequestBody } from '~/requests/brand.request'
+import { AddBrandRequestBody, UpdateBrandRequestBody } from '~/requests/brand.request'
 
 class BrandService {
   // --- Add Brand ---
@@ -32,6 +32,19 @@ class BrandService {
       brand,
       category
     }
+  }
+
+  // --- Update Brand ---
+  async updateBrand(brand_id: number, data: UpdateBrandRequestBody) {
+    const [brand] = await db
+      .update(brands)
+      .set({
+        ...data,
+        updatedAt: new Date()
+      })
+      .where(eq(brands.id, brand_id))
+      .returning()
+    return brand
   }
 }
 

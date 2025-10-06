@@ -36,54 +36,47 @@ export const categoryIdSchema: ParamSchema = {
   }
 }
 
-// --- Add category validator ---
-export const addCategoryValidator = validate(
-  checkSchema(
-    {
-      name: {
-        isString: true,
-        notEmpty: {
-          errorMessage: CATEGORY_MESSAGE.CATEGORY_NAME_NOT_EMPTY
-        },
-        isLength: {
-          options: {
-            min: 2,
-            max: 180
-          },
-          errorMessage: CATEGORY_MESSAGE.CATEGORY_NAME_INVALID_LENGTH
-        },
-        trim: true,
-        custom: {
-          options: async (value, { req }) => {
-            const [category] = await db
-              .select({ name: categories.name })
-              .from(categories)
-              .where(eq(categories.name, value))
-              .limit(1)
-            if (category) {
-              throw new ErrorStatus({
-                message: CATEGORY_MESSAGE.CATEGORY_NAME_EXISTS,
-                status: HTTP_STATUS.CONFLICT
-              })
-            }
-            return true
-          }
-        }
-      },
-      image: {
-        isString: true,
-        notEmpty: {
-          errorMessage: CATEGORY_MESSAGE.CATEGORY_IMAGE_NOT_EMPTY
-        },
-        isURL: {
-          errorMessage: CATEGORY_MESSAGE.CATEGORY_IMAGE_INVALID
-        },
-        trim: true
-      }
+export const nameCategorySchema: ParamSchema = {
+  isString: true,
+  notEmpty: {
+    errorMessage: CATEGORY_MESSAGE.CATEGORY_NAME_NOT_EMPTY
+  },
+  isLength: {
+    options: {
+      min: 2,
+      max: 180
     },
-    ['body']
-  )
-)
+    errorMessage: CATEGORY_MESSAGE.CATEGORY_NAME_INVALID_LENGTH
+  },
+  trim: true,
+  custom: {
+    options: async (value, { req }) => {
+      const [category] = await db
+        .select({ name: categories.name })
+        .from(categories)
+        .where(eq(categories.name, value))
+        .limit(1)
+      if (category) {
+        throw new ErrorStatus({
+          message: CATEGORY_MESSAGE.CATEGORY_NAME_EXISTS,
+          status: HTTP_STATUS.CONFLICT
+        })
+      }
+      return true
+    }
+  }
+}
+
+export const imageCategorySchema: ParamSchema = {
+  isString: true,
+  notEmpty: {
+    errorMessage: CATEGORY_MESSAGE.CATEGORY_IMAGE_NOT_EMPTY
+  },
+  isURL: {
+    errorMessage: CATEGORY_MESSAGE.CATEGORY_IMAGE_INVALID
+  },
+  trim: true
+}
 
 // --- Check category id validator ---
 export const checkCategoryId = validate(
@@ -92,5 +85,27 @@ export const checkCategoryId = validate(
       category_id: categoryIdSchema
     },
     ['params']
+  )
+)
+
+// --- Add category validator ---
+export const addCategoryValidator = validate(
+  checkSchema(
+    {
+      name: nameCategorySchema,
+      image: imageCategorySchema
+    },
+    ['body']
+  )
+)
+
+// --- Update category validator ---
+export const updateCategoryValidator = validate(
+  checkSchema(
+    {
+      name: nameCategorySchema,
+      image: imageCategorySchema
+    },
+    ['body']
   )
 )

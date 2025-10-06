@@ -66,7 +66,7 @@ export const CATEGORY_MESSAGE = {
   ADD_CATEGORY_SUCCESS: 'Thêm danh mục thành công',
   CATEGORY_ID_NOT_EMPTY: 'ID danh mục không được để trống',
   CATEGORY_INVALID_ID: 'ID danh mục không hợp lệ',
-  UPDATE_CATEGORY_SUCCESS: 'Chỉnh sửa danh mục thành công',
+  UPDATE_CATEGORY_SUCCESS: 'Cập nhật danh mục thành công',
   DELETE_CATEGORY_SUCCESS: 'Xóa danh mục thành công',
   GET_CATEGORY_ALL_SUCCESS: 'Lấy danh sách danh mục thành công',
   GET_CATEGORY_DETAIL_SUCCESS: 'Lấy chi tiết danh mục thành công'
@@ -78,5 +78,9 @@ export const BRAND_MESSAGE = {
   BRAND_NAME_EXISTS: 'Tên thương hiệu đã tồn tại',
   BRAND_IMAGE_NOT_EMPTY: 'Hình ảnh thương hiệu không được để trống',
   BRAND_IMAGE_INVALID: 'Hình ảnh thương hiệu không hợp lệ',
-  ADD_BRAND_SUCCESS: 'Thêm thương hiệu thành công'
+  ADD_BRAND_SUCCESS: 'Thêm thương hiệu thành công',
+  BRAND_INVALID_ID: 'ID thương hiệu không hợp lệ',
+  BRAND_NOT_FOUND: 'Không tìm thấy tên thương hiệu',
+  BRAND_ID_NOT_EMPTY: 'ID thương hiệu không được để trống',
+  UPDATE_BRAND_SUCCESS: 'Cập nhật thương hiệu thành công'
 }

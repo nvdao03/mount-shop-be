@@ -6,7 +6,7 @@ import {
   updateCategoryController
 } from '~/controllers/category.controller'
 import { accessTokenValidator, verifyAdminValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
-import { addCategoryValidator, checkCategoryId } from '~/middlewares/category.middleware'
+import { addCategoryValidator, checkCategoryId, updateCategoryValidator } from '~/middlewares/category.middleware'
 import { wrapHandler } from '~/utils/wrapHanler'
 
 const router = Router()
@@ -28,6 +28,7 @@ router.put(
   verifyUserValidator,
   verifyAdminValidator,
   checkCategoryId,
+  updateCategoryValidator,
   wrapHandler(updateCategoryController)
 )
 
