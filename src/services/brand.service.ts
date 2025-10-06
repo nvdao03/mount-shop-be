@@ -1,5 +1,5 @@
 import { db } from '~/configs/postgreSQL.config'
-import { eq } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
 import { brands, brands_categories, categories } from '~/db/schema'
 import { AddBrandRequestBody, UpdateBrandRequestBody } from '~/requests/brand.request'
 
@@ -57,6 +57,25 @@ class BrandService {
   async getBrandDetail(brand_id: number) {
     const [brand] = await db.select().from(brands).where(eq(brands.id, brand_id)).limit(1)
     return brand
+  }
+
+  // --- Get All Brands ---
+  async getAllBrands({ limit, page }: { limit: number; page: number }) {
+    const [data, [{ total }]] = await Promise.all([
+      db
+        .select()
+        .from(brands)
+        .limit(limit)
+        .offset(limit * (page - 1)),
+      db.select({ total: count(brands.id) }).from(brands)
+    ])
+    const total_page = Math.ceil(Number(total) / limit)
+    return {
+      data,
+      page,
+      limit,
+      total_page
+    }
   }
 }
 

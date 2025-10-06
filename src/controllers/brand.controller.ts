@@ -1,6 +1,6 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
-import { AddBrandRequestBody, UpdateBrandRequestBody } from './../requests/brand.request'
+import { AddBrandRequestBody, BrandQueryParams, UpdateBrandRequestBody } from './../requests/brand.request'
 import brandService from '~/services/brand.service'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { BRAND_MESSAGE } from '~/constants/message'
@@ -65,5 +65,27 @@ export const getBrandDetailController = async (
   return res.status(HTTP_STATUS.OK).json({
     message: BRAND_MESSAGE.GET_BRAND_DETAIL_SUCCESS,
     data: result
+  })
+}
+
+// --- Get All Brands ---
+export const getAllBrandsController = async (
+  req: Request<ParamsDictionary, any, any, BrandQueryParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  const limit = Number(req.query.limit as string)
+  const page = Number(req.query.page as string)
+  const result = await brandService.getAllBrands({ limit, page })
+  return res.status(HTTP_STATUS.OK).json({
+    message: BRAND_MESSAGE.GET_ALL_BRANDS_SUCCESS,
+    data: {
+      brands: result.data,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total_page: result.total_page
+      }
+    }
   })
 }

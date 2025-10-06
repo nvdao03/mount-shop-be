@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   addBrandController,
   deleteBrandController,
+  getAllBrandsController,
   getBrandDetailController,
   updateBrandController
 } from '~/controllers/brand.controller'
@@ -42,8 +43,8 @@ router.delete(
   wrapHandler(deleteBrandController)
 )
 
-// --- Get Brand List ---
-router.get('/')
+// --- Get All Brand ---
+router.get('/', accessTokenValidator, verifyUserValidator, verifyAdminValidator, wrapHandler(getAllBrandsController))
 
 // --- Get Brand Detail ---
 router.get(

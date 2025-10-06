@@ -85,5 +85,6 @@ export const BRAND_MESSAGE = {
   BRAND_ID_NOT_EMPTY: 'ID thương hiệu không được để trống',
   UPDATE_BRAND_SUCCESS: 'Cập nhật thương hiệu thành công',
   DELETE_BRAND_SUCCESS: 'Xoá thương hiệu thành công',
-  GET_BRAND_DETAIL_SUCCESS: 'Lấy chi tiết thương hiệu thành công'
+  GET_BRAND_DETAIL_SUCCESS: 'Lấy chi tiết thương hiệu thành công',
+  GET_ALL_BRANDS_SUCCESS: 'Lấy danh sách thương hiệu thành công'
 }
