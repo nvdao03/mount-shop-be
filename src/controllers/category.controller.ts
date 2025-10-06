@@ -81,3 +81,17 @@ export const getCategoryDetailController = async (
     data: result
   })
 }
+
+// --- Get Brands By Category Id ---
+export const getBrandsByCategoryIdController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { category_id } = req.params
+  const result = await categoryService.getBrandsByCategoryId(Number(category_id))
+  return res.status(HTTP_STATUS.OK).json({
+    message: CATEGORY_MESSAGE.GET_BRANDS_BY_CATEGORY_ID_SUCCESS,
+    data: result
+  })
+}

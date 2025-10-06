@@ -46,6 +46,18 @@ class BrandService {
       .returning()
     return brand
   }
+
+  // --- Delete Brand ---
+  async deleteBrand(brand_id: number) {
+    const [brand] = await db.delete(brands).where(eq(brands.id, brand_id)).returning()
+    return brand
+  }
+
+  // --- Get Brand Detail ---
+  async getBrandDetail(brand_id: number) {
+    const [brand] = await db.select().from(brands).where(eq(brands.id, brand_id)).limit(1)
+    return brand
+  }
 }
 
 const brandService = new BrandService()

@@ -26,6 +26,7 @@ export const addBrandController = async (
   })
 }
 
+// --- Update Brand ---
 export const updateBrandController = async (
   req: Request<ParamsDictionary, any, UpdateBrandRequestBody>,
   res: Response,
@@ -35,6 +36,34 @@ export const updateBrandController = async (
   const result = await brandService.updateBrand(Number(brand_id), req.body)
   return res.status(HTTP_STATUS.OK).json({
     message: BRAND_MESSAGE.UPDATE_BRAND_SUCCESS,
+    data: result
+  })
+}
+
+// --- Delete Brand ---
+export const deleteBrandController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { brand_id } = req.params
+  const result = await brandService.deleteBrand(Number(brand_id))
+  return res.status(HTTP_STATUS.OK).json({
+    message: BRAND_MESSAGE.DELETE_BRAND_SUCCESS,
+    data: result
+  })
+}
+
+// --- Get Brand Detail ---
+export const getBrandDetailController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { brand_id } = req.params
+  const result = await brandService.getBrandDetail(Number(brand_id))
+  return res.status(HTTP_STATUS.OK).json({
+    message: BRAND_MESSAGE.GET_BRAND_DETAIL_SUCCESS,
     data: result
   })
 }

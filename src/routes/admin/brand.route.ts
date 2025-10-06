@@ -1,5 +1,10 @@
 import { Router } from 'express'
-import { addBrandController, updateBrandController } from '~/controllers/brand.controller'
+import {
+  addBrandController,
+  deleteBrandController,
+  getBrandDetailController,
+  updateBrandController
+} from '~/controllers/brand.controller'
 import { accessTokenValidator, verifyAdminValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
 import { addBrandValidator, checkBrandId, updateBrandValidator } from '~/middlewares/brand.middleware'
 import { wrapHandler } from '~/utils/wrapHanler'
@@ -28,12 +33,26 @@ router.put(
 )
 
 // --- Delete Brand ---
-router.delete('/:brand_id')
+router.delete(
+  '/:brand_id',
+  accessTokenValidator,
+  verifyUserValidator,
+  verifyAdminValidator,
+  checkBrandId,
+  wrapHandler(deleteBrandController)
+)
 
 // --- Get Brand List ---
 router.get('/')
 
 // --- Get Brand Detail ---
-router.get('/:brand_id')
+router.get(
+  '/:brand_id',
+  accessTokenValidator,
+  verifyUserValidator,
+  verifyAdminValidator,
+  checkBrandId,
+  wrapHandler(getBrandDetailController)
+)
 
 export default router

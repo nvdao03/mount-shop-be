@@ -1,5 +1,5 @@
 import { db } from '~/configs/postgreSQL.config'
-import { categories } from '~/db/schema'
+import { brands, brands_categories, categories } from '~/db/schema'
 import { AddCategoryRequestBody, UpdateCategoryRequestBody } from '~/requests/category.request'
 import { eq, count } from 'drizzle-orm'
 
@@ -57,6 +57,20 @@ class CategoryService {
   async getCategoryDetail(category_id: number) {
     const [category] = await db.select().from(categories).where(eq(categories.id, category_id)).limit(1)
     return category
+  }
+
+  // --- Get Brands By Category Id ---
+  async getBrandsByCategoryId(category_id: number) {
+    const brand = await db
+      .select({
+        id: brands.id,
+        name: brands.name,
+        image: brands.image
+      })
+      .from(brands)
+      .innerJoin(brands_categories, eq(brands_categories.brand_id, brands.id))
+      .where(eq(brands_categories.category_id, category_id))
+    return brand
   }
 }
 
