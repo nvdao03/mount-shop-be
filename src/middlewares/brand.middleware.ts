@@ -10,6 +10,31 @@ import { categoryIdSchema } from '~/middlewares/category.middleware'
 import { and, not, ne } from 'drizzle-orm'
 
 // --- Common validator ---
+export const brandIdSchema: ParamSchema = {
+  isInt: {
+    errorMessage: BRAND_MESSAGE.BRAND_INVALID_ID
+  },
+  toInt: true,
+  custom: {
+    options: async (value, { req }) => {
+      if (value === undefined || value === null || value === '') {
+        throw new ErrorStatus({
+          message: BRAND_MESSAGE.BRAND_ID_NOT_EMPTY,
+          status: HTTP_STATUS.BAD_REQUEST
+        })
+      }
+      const [brand] = await db.select().from(brands).where(eq(brands.id, value)).limit(1)
+      if (!brand) {
+        throw new ErrorStatus({
+          message: BRAND_MESSAGE.BRAND_NOT_FOUND,
+          status: HTTP_STATUS.NOT_FOUND
+        })
+      }
+      return true
+    }
+  }
+}
+
 export const nameBrandSchema: ParamSchema = {
   isString: true,
   notEmpty: {
@@ -40,33 +65,7 @@ export const imageBrandSchema: ParamSchema = {
 export const checkBrandId = validate(
   checkSchema(
     {
-      brand_id: {
-        isInt: {
-          errorMessage: BRAND_MESSAGE.BRAND_INVALID_ID
-        },
-        toInt: true,
-        custom: {
-          options: async (value, { req }) => {
-            if (value === undefined || value === null || value === '') {
-              throw new ErrorStatus({
-                message: BRAND_MESSAGE.BRAND_ID_NOT_EMPTY,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-
-            const [brand] = await db.select().from(brands).where(eq(brands.id, value)).limit(1)
-
-            if (!brand) {
-              throw new ErrorStatus({
-                message: BRAND_MESSAGE.BRAND_NOT_FOUND,
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
-
-            return true
-          }
-        }
-      }
+      brand_id: brandIdSchema
     },
     ['params']
   )

@@ -88,3 +88,32 @@ export const BRAND_MESSAGE = {
   GET_BRAND_DETAIL_SUCCESS: 'Lấy chi tiết thương hiệu thành công',
   GET_ALL_BRANDS_SUCCESS: 'Lấy danh sách thương hiệu thành công'
 }
+
+export const PRODUCT_MESSAGE = {
+  PRODUCT_NOT_FOUND: 'Không tìm thấy sản phẩm',
+  PRODUCT_NOT_EXISTS: 'Sản phẩm không tồn tại',
+  PRODUCT_NAME_NOT_EMPTY: 'Tên sản phẩm không được để trống',
+  PRODUCT_NAME_INVALID_LENGTH: 'Tên sản phẩm phải có ít nhất 2 - 180 ký tự',
+  PRODUCT_IMAGE_NOT_EMPTY: 'Hình ảnh sản phẩm không được để trống',
+  PRODUCT_IMAGE_INVALID: 'Hình ảnh sản phẩm không hợp lệ',
+  PRODUCT_PRICE_NOT_EMPTY: 'Giá sản phẩm không được để trống',
+  PRODUCT_PRICE_INVALID_LENGTH: 'Giá sản phẩm phải có ít nhất 2 - 180 ký tự',
+  PRODUCT_DESCRIPTION_NOT_EMPTY: 'Mô tả sản phẩm không được để trống',
+  PRODUCT_DESCRIPTION_INVALID_LENGTH: 'Mô tả sản phẩm phải có ít nhất 2 ký tự',
+  PRODUCT_RATING_NOT_EMPTY: 'Số lượng sao không được để trống',
+  PRODUCT_SOLD_NOT_EMPTY: 'Số lượng sản phẩm đã bán không được để trống',
+  PRODUCT_SOLD_INVALID_LENGTH: 'Số lượng sản phẩm đã bán ít nhất phải là 0',
+  PRODUCT_DISCOUNT_PRICE_NOT_EMPTY: 'Giá sản phẩm trước đó không được để trống',
+  PRODUCT_STOCK_NOT_EMPTY: 'Số lượng sản phẩm trong kho không được để trống',
+  PRODUCT_STOCK_INVALID_LENGTH: 'Số lượng sản phẩm trong kho phải có ít nhất 0',
+  PRODUCT_IMAGES_MUST_BE_ARRAY: 'Hình ảnh sản phẩm phải là mảng',
+  PRODUCT_PRICE_INVALID: 'Giá sản phẩm không hợp lệ',
+  PRODUCT_DISCOUNT_PRICE_INVALID: 'Giá sản phẩm trước đó không hợp lệ',
+  PRODUCT_DISCOUNT_PRICE_GT_PRICE: 'Giá sản phẩm trước đó phải nhỏ hơn giá sản phẩm',
+  PRODUCT_RATING_INVALID: 'Số lượng sao không hợp lệ',
+  PRODUCT_SOLD_INVALID: 'Số lượng sản phẩm đã bán không hợp lệ',
+  PRODUCT_STOCK_INVALID: 'Số lượng sản phẩm trong kho không hợp lệ',
+  ADD_PRODUCT_SUCCESS: 'Thêm sản phẩm thành công',
+  UPDATE_PRODUCT_SUCCESS: 'Cập nhật sản phẩm thành công',
+  DELETE_PRODUCT_SUCCESS: 'Xoá sản phẩm thành công'
+}
