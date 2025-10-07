@@ -53,7 +53,7 @@ const descriptionProductSchema: ParamSchema = {
 }
 
 const priceProductSchema: ParamSchema = {
-  isNumeric: {
+  isInt: {
     errorMessage: PRODUCT_MESSAGE.PRODUCT_PRICE_INVALID
   },
   notEmpty: {
@@ -62,7 +62,7 @@ const priceProductSchema: ParamSchema = {
 }
 
 const discountPriceProductSchema: ParamSchema = {
-  isNumeric: {
+  isInt: {
     errorMessage: PRODUCT_MESSAGE.PRODUCT_DISCOUNT_PRICE_INVALID
   },
   optional: true,

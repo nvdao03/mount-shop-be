@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm'
+import { count, desc, eq, and, inArray, ilike, gte, lte, lt, asc } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { brands, categories, products } from '~/db/schema'
-import { AddProductRequestBody, UpdateProductRequestBody } from '~/requests/product.request'
+import { AddProductRequestBody, ProductQueryParams, UpdateProductRequestBody } from '~/requests/product.request'
 
 class ProductService {
   // --- Add Product ---
@@ -83,6 +83,120 @@ class ProductService {
       product,
       category,
       brand
+    }
+  }
+
+  // --- Get All Products ---
+  async getAllProducts({ limit, page }: { limit: number; page: number }) {
+    const offset = limit * (page - 1)
+    const [productList, [{ total }]] = await Promise.all([
+      db
+        .select({
+          id: products.id,
+          name: products.name,
+          image: products.image,
+          images: products.images,
+          description: products.description,
+          discount_price: products.discount_price,
+          price: products.price,
+          rating: products.rating,
+          sold: products.sold,
+          stock: products.stock,
+          category: {
+            id: categories.id,
+            name: categories.name
+          },
+          brand: {
+            id: brands.id,
+            name: brands.name
+          },
+          createdAt: products.createdAt,
+          updatedAt: products.updatedAt
+        })
+        .from(products)
+        .innerJoin(brands, eq(brands.id, products.brand_id))
+        .innerJoin(categories, eq(categories.id, products.category_id))
+        .orderBy(desc(products.createdAt))
+        .limit(limit)
+        .offset(offset),
+      db.select({ total: count() }).from(products)
+    ])
+    const total_page = Math.ceil(Number(total) / limit)
+    return {
+      productList,
+      page,
+      limit,
+      total_page
+    }
+  }
+
+  // --- Get Products ---
+  async getProducts(query: ProductQueryParams) {
+    const { brands, search, min_price, max_price, order, rating, category } = query
+    const limit = Number(query.limit as string) || 15
+    const page = Number(query.page as string) || 1
+    const offset = limit * (page - 1)
+    // --- Gom nhóm điều kiện ---
+    const conditions: any[] = []
+    if (category) conditions.push(eq(products.category_id, Number(category)))
+    if (brands) {
+      let brandIds: number[] = []
+      // Xử lý nếu FE gửi lên 1 mảng thì thêm mảng đó vào mảng brandIds để tị so sánh
+      if (Array.isArray(brands)) {
+        brandIds = brands.map((id) => Number(id))
+      } else {
+        // Xử lý nếu FE gửi lên là JSON thì parse về đúng định dạng gốc
+        try {
+          const parsed = JSON.parse(brands)
+          // Nếu nó là mảng thì thêm mảng đó vào mảng brandIds
+          if (Array.isArray(parsed)) {
+            brandIds = parsed.map((id) => Number(id))
+          }
+          // Nếu FE truyền nên ko phải là dạng mảng và cũng ko phải number chỉ là chuỗi thì sẽ kiểm tra xem có đúng là dạng số hay ko nếu đúng thì thêm về mảng brandIds
+          else if (!isNaN(Number(parsed))) {
+            brandIds = [Number(parsed)]
+          }
+        } catch {
+          if (!isNaN(Number(brands))) {
+            brandIds = [Number(brands)]
+          }
+        }
+      }
+      if (brandIds.length > 0) {
+        conditions.push(inArray(products.brand_id, brandIds))
+      }
+    }
+    if (search) conditions.push(ilike(products.name, `%${search}%`))
+    if (min_price) conditions.push(gte(products.price, Number(min_price)))
+    if (max_price) conditions.push(lte(products.price, Number(max_price)))
+    if (rating) {
+      const ratingInt = Math.floor(Number(rating))
+      const minRating = ratingInt
+      const maxRating = minRating + 1
+      conditions.push(and(gte(products.rating, String(minRating)), lt(products.rating, String(maxRating))))
+    }
+    const orderBy =
+      order === 'asc' ? asc(products.price) : order === 'desc' ? desc(products.price) : desc(products.createdAt)
+    // --- Query ---
+    const [productList, [{ total }]] = await Promise.all([
+      db
+        .select()
+        .from(products)
+        .where(and(...conditions))
+        .limit(limit)
+        .offset(offset)
+        .orderBy(orderBy),
+      db
+        .select({ total: count() })
+        .from(products)
+        .where(and(...conditions))
+    ])
+    const total_page = Math.ceil(Number(total) / limit)
+    return {
+      productList,
+      page,
+      limit,
+      total_page
     }
   }
 }

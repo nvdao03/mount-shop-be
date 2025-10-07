@@ -1,6 +1,11 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
-import { AddProductRequestBody, UpdateProductRequestBody } from '~/requests/product.request'
+import {
+  AddProductRequestBody,
+  ProductAllQueryParams,
+  ProductQueryParams,
+  UpdateProductRequestBody
+} from '~/requests/product.request'
 import productService from '~/services/product.service'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { PRODUCT_MESSAGE } from '~/constants/message'
@@ -149,6 +154,51 @@ export const getProductDetailController = async (
       },
       createAt: product.createdAt,
       updateAt: product.updatedAt
+    }
+  })
+}
+
+// --- Get All Products ---
+export const getAllProductsController = async (
+  req: Request<ParamsDictionary, any, any, ProductAllQueryParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  const limit = Number(req.query.limit as string)
+  const page = Number(req.query.page as string)
+  const result = await productService.getAllProducts({ limit, page })
+  const { productList: products, total_page } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: PRODUCT_MESSAGE.GET_ALL_PRODUCTS_SUCCESS,
+    data: {
+      products,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total_page: total_page
+      }
+    }
+  })
+}
+
+// --- Get Products ---
+export const getProductsController = async (
+  req: Request<ParamsDictionary, any, any, ProductQueryParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  const query = req.query
+  const result = await productService.getProducts(query)
+  const { productList, page, limit, total_page } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: PRODUCT_MESSAGE.GET_PRODUCTS_SUCCESS,
+    data: {
+      products: productList,
+      pagination: {
+        page: page,
+        limit: limit,
+        total_page: total_page
+      }
     }
   })
 }

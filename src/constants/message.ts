@@ -118,5 +118,7 @@ export const PRODUCT_MESSAGE = {
   DELETE_PRODUCT_SUCCESS: 'Xoá sản phẩm thành công',
   PRODUCT_ID_NOT_EMPTY: 'ID sản phẩm không được để trống',
   PRODUCT_ID_INVALID: 'ID sản phẩm không hợp lệ',
-  GET_PRODUCT_DETAIL_SUCCESS: 'Lấy chi tiết sản phẩm thành công'
+  GET_PRODUCT_DETAIL_SUCCESS: 'Lấy chi tiết sản phẩm thành công',
+  GET_ALL_PRODUCTS_SUCCESS: 'Lấy danh sách sản phẩm thành công',
+  GET_PRODUCTS_SUCCESS: 'Lấy danh sách sản phẩm thành công'
 }
