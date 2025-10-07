@@ -115,5 +115,7 @@ export const PRODUCT_MESSAGE = {
   PRODUCT_STOCK_INVALID: 'Số lượng sản phẩm trong kho không hợp lệ',
   ADD_PRODUCT_SUCCESS: 'Thêm sản phẩm thành công',
   UPDATE_PRODUCT_SUCCESS: 'Cập nhật sản phẩm thành công',
-  DELETE_PRODUCT_SUCCESS: 'Xoá sản phẩm thành công'
+  DELETE_PRODUCT_SUCCESS: 'Xoá sản phẩm thành công',
+  PRODUCT_ID_NOT_EMPTY: 'ID sản phẩm không được để trống',
+  PRODUCT_ID_INVALID: 'ID sản phẩm không hợp lệ'
 }

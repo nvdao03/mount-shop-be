@@ -1,7 +1,11 @@
 import { Router } from 'express'
-import { addProductController } from '~/controllers/product.controller'
+import {
+  addProductController,
+  deleteProductController,
+  updateProductController
+} from '~/controllers/product.controller'
 import { accessTokenValidator, verifyAdminValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
-import { addProductValidator } from '~/middlewares/product.middleware'
+import { addProductValidator, checkProductId, updateProductValidator } from '~/middlewares/product.middleware'
 import { wrapHandler } from '~/utils/wrapHanler'
 
 const router = Router()
@@ -17,8 +21,25 @@ router.post(
 )
 
 // --- Update Product ---
+router.post(
+  '/:product_id',
+  accessTokenValidator,
+  verifyUserValidator,
+  verifyAdminValidator,
+  checkProductId,
+  updateProductValidator,
+  wrapHandler(updateProductController)
+)
 
 // --- Delete Product ---
+router.delete(
+  '/:product_id',
+  accessTokenValidator,
+  verifyUserValidator,
+  verifyAdminValidator,
+  checkProductId,
+  wrapHandler(deleteProductController)
+)
 
 // --- Get Product Detail ---
 

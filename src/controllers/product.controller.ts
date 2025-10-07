@@ -1,6 +1,6 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
-import { AddProductRequestBody } from '~/requests/product.request'
+import { AddProductRequestBody, UpdateProductRequestBody } from '~/requests/product.request'
 import productService from '~/services/product.service'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { PRODUCT_MESSAGE } from '~/constants/message'
@@ -36,6 +36,81 @@ export const addProductController = async (
       },
       createAt: product.createdAt,
       updateAt: product.updatedAt
+    }
+  })
+}
+
+// --- Update Product ---
+export const updateProductController = async (
+  req: Request<ParamsDictionary, any, UpdateProductRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const product_id = Number(req.params.product_id)
+  const result = await productService.updateProduct(req.body, product_id)
+  const { product, category, brand } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: PRODUCT_MESSAGE.UPDATE_PRODUCT_SUCCESS,
+    data: {
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      images: product.images,
+      description: product.description,
+      discount_price: product.discount_price,
+      price: product.price,
+      rating: product.rating,
+      sold: product.sold,
+      stock: product.stock,
+      category: {
+        id: category.id,
+        name: category.name
+      },
+      brand: {
+        id: brand.id,
+        name: brand.name
+      },
+      createAt: product.createdAt,
+      updateAt: product.updatedAt
+    }
+  })
+}
+
+// --- Delete Product ---
+export const deleteProductController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const product_id = Number(req.params.product_id)
+  const product = (req as Request).product
+  const category_id = product?.category_id as number
+  const brand_id = product?.brand_id as number
+  const result = await productService.deleteProduct(product_id, brand_id, category_id)
+  const { product: productRes, category, brand } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: PRODUCT_MESSAGE.DELETE_PRODUCT_SUCCESS,
+    data: {
+      id: productRes.id,
+      name: productRes.name,
+      image: productRes.image,
+      images: productRes.images,
+      description: productRes.description,
+      discount_price: productRes.discount_price,
+      price: productRes.price,
+      rating: productRes.rating,
+      sold: productRes.sold,
+      stock: productRes.stock,
+      category: {
+        id: category.id,
+        name: category.name
+      },
+      brand: {
+        id: brand.id,
+        name: brand.name
+      },
+      createAt: productRes.createdAt,
+      updateAt: productRes.updatedAt
     }
   })
 }
