@@ -50,7 +50,7 @@ class ProductService {
     }
   }
 
-  // --- Delete product ---
+  // --- Delete Product ---
   async deleteProduct(product_id: number, brand_id: number, category_id: number) {
     const [[category], [brand]] = await Promise.all([
       db
@@ -61,6 +61,24 @@ class ProductService {
       db.select({ id: brands.id, name: brands.name }).from(brands).where(eq(brands.id, brand_id)).limit(1)
     ])
     const [product] = await db.delete(products).where(eq(products.id, product_id)).returning()
+    return {
+      product,
+      category,
+      brand
+    }
+  }
+
+  // --- Get Product Detail ---
+  async getProductDetail(product_id: number, brand_id: number, category_id: number) {
+    const [[category], [brand], [product]] = await Promise.all([
+      db
+        .select({ id: categories.id, name: categories.name })
+        .from(categories)
+        .where(eq(categories.id, category_id))
+        .limit(1),
+      db.select({ id: brands.id, name: brands.name }).from(brands).where(eq(brands.id, brand_id)).limit(1),
+      db.select().from(products).where(eq(products.id, product_id)).limit(1)
+    ])
     return {
       product,
       category,

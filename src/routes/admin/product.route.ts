@@ -41,8 +41,6 @@ router.delete(
   wrapHandler(deleteProductController)
 )
 
-// --- Get Product Detail ---
-
 // --- Get Product List ---
 
 export default router

@@ -114,3 +114,41 @@ export const deleteProductController = async (
     }
   })
 }
+
+// --- Get Product Detail ---
+export const getProductDetailController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const product_id = Number(req.params.product_id)
+  const category_id = (req as Request).product?.category_id as number
+  const brand_id = (req as Request).product?.brand_id as number
+  const result = await productService.getProductDetail(product_id, brand_id, category_id)
+  const { brand, category, product } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: PRODUCT_MESSAGE.GET_PRODUCT_DETAIL_SUCCESS,
+    data: {
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      images: product.images,
+      description: product.description,
+      discount_price: product.discount_price,
+      price: product.price,
+      rating: product.rating,
+      sold: product.sold,
+      stock: product.stock,
+      category: {
+        id: category.id,
+        name: category.name
+      },
+      brand: {
+        id: brand.id,
+        name: brand.name
+      },
+      createAt: product.createdAt,
+      updateAt: product.updatedAt
+    }
+  })
+}
