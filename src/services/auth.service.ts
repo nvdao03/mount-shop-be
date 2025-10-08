@@ -3,7 +3,7 @@ import { verifyToken } from './../utils/jwt'
 import { and, eq } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enum'
-import { refresh_tokens, roles, users } from '~/db/schema'
+import { addresses, refresh_tokens, roles, users } from '~/db/schema'
 import { signToken } from '~/utils/jwt'
 import '../configs/env.config'
 import hashPassword from '~/utils/crypto'
@@ -141,17 +141,17 @@ class AuthService {
     const [role] = await db.select().from(roles).where(eq(roles.name, 'customer')).limit(1)
     const [insertedUser] = await db
       .insert(users)
-      .values({ email, full_name, password: hashPassword(password), role_id: role.id })
+      .values({ email, password: hashPassword(password), role_id: role.id })
       .returning({
         user_id: users.id
       })
-    const email_verify_token = await this.signEmailVerifyToken({
-      user_id: insertedUser.user_id,
-      verify: UserVerifyStatus.Unverifyed,
-      role: role.name
-    })
     const user_id = insertedUser.user_id
-    const [access_token, refresh_token] = await Promise.all([
+    const [email_verify_token, access_token, refresh_token] = await Promise.all([
+      this.signEmailVerifyToken({
+        user_id,
+        verify: UserVerifyStatus.Unverifyed,
+        role: role.name
+      }),
       this.signAccessToken({ user_id, verify: UserVerifyStatus.Unverifyed, role: role.name }),
       this.signRefreshToken({ user_id, verify: UserVerifyStatus.Unverifyed, role: role.name })
     ])
@@ -165,7 +165,17 @@ class AuthService {
         secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
       })
     ])
-    const [[user]] = await Promise.all([
+    const [[address], [user]] = await Promise.all([
+      db
+        .insert(addresses)
+        .values({
+          user_id,
+          full_name,
+          is_default: true
+        })
+        .returning({
+          full_name: addresses.full_name
+        }),
       db
         .update(users)
         .set({
@@ -189,13 +199,23 @@ class AuthService {
       decoded_access_token,
       decoded_refresh_token,
       user,
-      role
+      role,
+      address
     }
   }
 
   // --- Login ---
   async login({ user_id, verify, role_id }: { user_id: number; verify: UserVerifyStatus; role_id: number }) {
-    const [role] = await db.select().from(roles).where(eq(roles.id, role_id)).limit(1)
+    const [[role], [address]] = await Promise.all([
+      db.select().from(roles).where(eq(roles.id, role_id)).limit(1),
+      db
+        .select({
+          full_name: addresses.full_name
+        })
+        .from(addresses)
+        .where(and(eq(addresses.user_id, user_id), eq(addresses.is_default, true)))
+        .limit(1)
+    ])
     const [access_token, refresh_token] = await Promise.all([
       this.signAccessToken({ user_id, verify, role: role.name }),
       this.signRefreshToken({ user_id, verify, role: role.name })
@@ -221,7 +241,8 @@ class AuthService {
       refresh_token,
       decoded_access_token,
       decoded_refresh_token,
-      role
+      role,
+      address
     }
   }
 
@@ -303,7 +324,16 @@ class AuthService {
       })
       .where(eq(users.id, user_id))
       .returning()
-    const [role] = await db.select().from(roles).where(eq(roles.id, role_id)).limit(1)
+    const [[role], [address]] = await Promise.all([
+      db.select().from(roles).where(eq(roles.id, role_id)).limit(1),
+      db
+        .select({
+          full_name: addresses.full_name
+        })
+        .from(addresses)
+        .where(and(eq(addresses.user_id, user_id), eq(addresses.is_default, true)))
+        .limit(1)
+    ])
     const [access_token, refresh_token] = await Promise.all([
       this.signAccessToken({ user_id, role: role.name, verify }),
       this.signRefreshToken({ user_id, role: role.name, verify })
@@ -324,6 +354,7 @@ class AuthService {
       decoded_access_token,
       decoded_refresh_token,
       user,
+      address,
       role
     }
   }
@@ -342,10 +373,17 @@ class AuthService {
     role: string
     refresh_token: string
   }) {
-    const [new_access_token, new_refresh_token, [user]] = await Promise.all([
+    const [new_access_token, new_refresh_token, [user], [address]] = await Promise.all([
       this.signAccessToken({ user_id, verify, role }),
       this.signRefreshToken({ user_id, verify, role, exp }),
       db.select().from(users).where(eq(users.id, user_id)).limit(1),
+      db
+        .select({
+          full_name: addresses.full_name
+        })
+        .from(addresses)
+        .where(and(eq(addresses.user_id, user_id), eq(addresses.is_default, true)))
+        .limit(1),
       db.delete(refresh_tokens).where(and(eq(refresh_tokens.user_id, user_id), eq(refresh_tokens.token, refresh_token)))
     ])
     const [decoded_access_token, decoded_refresh_token] = await Promise.all<TokenPayload>([
@@ -369,7 +407,8 @@ class AuthService {
       new_refresh_token,
       decoded_access_token,
       decoded_refresh_token,
-      user
+      user,
+      address
     }
   }
 }

@@ -27,7 +27,7 @@ export const registerController = async (
   next: NextFunction
 ) => {
   const result = await authService.register(req.body)
-  const { access_token, refresh_token, user, decoded_access_token, decoded_refresh_token, role } = result
+  const { access_token, refresh_token, user, decoded_access_token, decoded_refresh_token, role, address } = result
   return res.status(HTTP_STATUS.CREATED).json({
     message: AUTH_MESSAGE.REGISTER_SUCCESS,
     data: {
@@ -39,7 +39,7 @@ export const registerController = async (
         id: user.id,
         role: role.name,
         email: user.email,
-        full_name: user.full_name,
+        full_name: address.full_name,
         created_at: user.createdAt,
         update_at: user.updatedAt
       }
@@ -57,7 +57,7 @@ export const loginController = async (
   const user_id = user.id
   const role_id = user.role_id
   const result = await authService.login({ user_id, verify: user.verify as UserVerifyStatus, role_id })
-  const { access_token, refresh_token, decoded_access_token, decoded_refresh_token, role } = result
+  const { access_token, refresh_token, decoded_access_token, decoded_refresh_token, role, address } = result
   return res.status(HTTP_STATUS.OK).json({
     message: AUTH_MESSAGE.LOGIN_SUCCESS,
     data: {
@@ -69,7 +69,7 @@ export const loginController = async (
         id: user.id,
         role: role.name,
         email: user.email,
-        full_name: user.full_name,
+        full_name: address.full_name,
         created_at: user.createdAt,
         update_at: user.updatedAt
       }
@@ -154,7 +154,7 @@ export const verifyEmailController = async (
     verify: user.verify as UserVerifyStatus,
     role_id: user.role_id
   })
-  const { access_token, refresh_token, role, decoded_access_token, decoded_refresh_token } = result
+  const { access_token, refresh_token, role, decoded_access_token, decoded_refresh_token, address } = result
   return res.status(HTTP_STATUS.OK).json({
     message: AUTH_MESSAGE.EMAIL_VERIFIED_SUCCESS,
     data: {
@@ -166,7 +166,7 @@ export const verifyEmailController = async (
         id: user.id,
         role: role.name,
         email: user.email,
-        full_name: user.full_name,
+        full_name: address.full_name,
         created_at: user.createdAt,
         update_at: user.updatedAt
       }
@@ -183,7 +183,7 @@ export const refreshTokenController = async (
   const { user_id, exp, verify, role } = req.decoded_refresh_token as TokenPayload
   const { refresh_token } = req.body
   const result = await authService.refreshToken({ user_id, exp, verify, refresh_token, role })
-  const { decoded_access_token, decoded_refresh_token, new_access_token, new_refresh_token, user } = result
+  const { decoded_access_token, decoded_refresh_token, new_access_token, new_refresh_token, user, address } = result
   return res.status(HTTP_STATUS.OK).json({
     message: AUTH_MESSAGE.REFRESH_TOKEN_SUCCESS,
     data: {
@@ -195,7 +195,7 @@ export const refreshTokenController = async (
         id: user.id,
         role: role,
         email: user.email,
-        full_name: user.full_name,
+        full_name: address.full_name,
         created_at: user.createdAt,
         update_at: user.updatedAt
       }

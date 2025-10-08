@@ -47,14 +47,14 @@ export const deleteCategoryController = async (
 }
 
 // --- Get All Category ---
-export const getCategoryAllController = async (
+export const getAllCategoriesController = async (
   req: Request<ParamsDictionary, any, any, CategoryQueryParams>,
   res: Response,
   next: NextFunction
 ) => {
   const limit = Number(req.query.limit as string)
   const page = Number(req.query.page as string)
-  const result = await categoryService.getCategoryAll({ limit, page })
+  const result = await categoryService.getAllCategories({ limit, page })
   return res.status(HTTP_STATUS.OK).json({
     message: CATEGORY_MESSAGE.GET_CATEGORY_ALL_SUCCESS,
     data: {
@@ -64,6 +64,21 @@ export const getCategoryAllController = async (
         limit: result.limit,
         total_page: result.total_page
       }
+    }
+  })
+}
+
+// -- Get Categories ---
+export const getCategoriesController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const result = await categoryService.getCategories()
+  return res.status(HTTP_STATUS.OK).json({
+    message: CATEGORY_MESSAGE.GET_CATEGORY_ALL_SUCCESS,
+    data: {
+      categories: result
     }
   })
 }
@@ -92,6 +107,8 @@ export const getBrandsByCategoryIdController = async (
   const result = await categoryService.getBrandsByCategoryId(Number(category_id))
   return res.status(HTTP_STATUS.OK).json({
     message: CATEGORY_MESSAGE.GET_BRANDS_BY_CATEGORY_ID_SUCCESS,
-    data: result
+    data: {
+      brands: result
+    }
   })
 }

@@ -30,7 +30,7 @@ class CategoryService {
   }
 
   // --- Get All Category ---
-  async getCategoryAll({ limit, page }: { limit: number; page: number }) {
+  async getAllCategories({ limit, page }: { limit: number; page: number }) {
     const offset = limit * (page - 1)
     const [data, [{ total }]] = await Promise.all([
       db
@@ -71,6 +71,18 @@ class CategoryService {
       .innerJoin(brands_categories, eq(brands_categories.brand_id, brands.id))
       .where(eq(brands_categories.category_id, category_id))
     return brand
+  }
+
+  // --- Get categories ---
+  async getCategories() {
+    const data = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        image: categories.image
+      })
+      .from(categories)
+    return data
   }
 }
 

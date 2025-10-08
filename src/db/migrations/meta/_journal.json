@@ -64,6 +64,20 @@
       "when": 1759823059524,
       "tag": "0008_simple_nemesis",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1759947782035,
+      "tag": "0009_flawless_hulk",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1759949227215,
+      "tag": "0010_complex_onslaught",
+      "breakpoints": true
     }
   ]
 }

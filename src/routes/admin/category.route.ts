@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   addCategoryController,
   deleteCategoryController,
+  getAllCategoriesController,
   getCategoryDetailController,
   updateCategoryController
 } from '~/controllers/category.controller'
@@ -50,6 +51,15 @@ router.get(
   verifyAdminValidator,
   checkCategoryId,
   wrapHandler(getCategoryDetailController)
+)
+
+// --- Get All Categories ---
+router.get(
+  '/',
+  accessTokenValidator,
+  verifyUserValidator,
+  verifyAdminValidator,
+  wrapHandler(getAllCategoriesController)
 )
 
 export default router

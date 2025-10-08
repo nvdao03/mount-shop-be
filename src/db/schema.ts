@@ -1,5 +1,6 @@
 import { InferModel } from 'drizzle-orm'
 import { numeric } from 'drizzle-orm/pg-core'
+import { boolean } from 'drizzle-orm/pg-core'
 import { text } from 'drizzle-orm/pg-core'
 import { primaryKey } from 'drizzle-orm/pg-core'
 import { timestamp } from 'drizzle-orm/pg-core'
@@ -18,13 +19,11 @@ export const roles = pgTable('roles', {
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  full_name: varchar('full_name', { length: 180 }).notNull(),
   email: varchar('email', { length: 180 }).notNull().unique(),
   password: varchar('password', { length: 180 }).notNull(),
   role_id: integer('role_id')
     .notNull()
     .references(() => roles.id, { onDelete: 'restrict' }),
-  phone: varchar('phone', { length: 20 }),
   avatar: varchar('avatar', { length: 255 }),
   verify: verifyEnum('verify').default('0').notNull(),
   email_verify_token: varchar('email_verify_token', { length: 255 }),
@@ -100,6 +99,19 @@ export const products = pgTable(
     pk: primaryKey({ columns: [table.id] })
   })
 )
+
+export const addresses = pgTable('addresses', {
+  id: serial('id').primaryKey(),
+  address: varchar('address', { length: 255 }),
+  phone: varchar('phone', { length: 20 }),
+  full_name: varchar('full_name', { length: 180 }).notNull(),
+  user_id: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  is_default: boolean('is_default').default(false).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
 
 // --- Types ---
 export type Role = InferModel<typeof roles>
