@@ -50,7 +50,11 @@ export const USER_MESSAGE = {
   USER_NOT_EXISTS: 'Tài khoản không tồn tại',
   USER_NOT_FOUND: 'Không tìm thấy tài khoản',
   GET_ME_SUCCESS: 'Lấy thông tin người dùng thành công',
-  USER_GET_PROFILE_SUCCESS: 'Lấy thống tin tài khoản thành công'
+  USER_GET_PROFILE_SUCCESS: 'Lấy thống tin tài khoản thành công',
+  PHONE_INVALID_LENGTH: 'Số điện thoại phải có ít nhất 10 - 20 ký tự',
+  AVATAR_INVALID: 'Avatar không hợp lệ',
+  ADDRESS_INVALID_LENGTH: 'Địa chỉ phải có ít nhất 2 - 180 ký tự',
+  USER_UPDATE_PROFILE_SUCCESS: 'Cập nhật thống tin tài khoản thành công'
 }
 
 export const MEDIA_MESSAGE = {
