@@ -121,3 +121,4 @@ export type Categories = InferModel<typeof categories>
 export type Brands = InferModel<typeof brands>
 export type BrandsCategories = InferModel<typeof brands_categories>
 export type Products = InferModel<typeof products>
+export type Addresses = InferModel<typeof addresses>

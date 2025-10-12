@@ -40,6 +40,7 @@ export const registerController = async (
         role: role.name,
         email: user.email,
         full_name: address.full_name,
+        avatar: user.avatar,
         created_at: user.createdAt,
         update_at: user.updatedAt
       }
@@ -70,6 +71,7 @@ export const loginController = async (
         role: role.name,
         email: user.email,
         full_name: address.full_name,
+        avatar: user.avatar,
         created_at: user.createdAt,
         update_at: user.updatedAt
       }
@@ -167,6 +169,7 @@ export const verifyEmailController = async (
         role: role.name,
         email: user.email,
         full_name: address.full_name,
+        avatar: user.avatar,
         created_at: user.createdAt,
         update_at: user.updatedAt
       }
@@ -196,6 +199,7 @@ export const refreshTokenController = async (
         role: role,
         email: user.email,
         full_name: address.full_name,
+        avatar: user.avatar,
         created_at: user.createdAt,
         update_at: user.updatedAt
       }

@@ -49,7 +49,8 @@ export const AUTH_MESSAGE = {
 export const USER_MESSAGE = {
   USER_NOT_EXISTS: 'Tài khoản không tồn tại',
   USER_NOT_FOUND: 'Không tìm thấy tài khoản',
-  GET_ME_SUCCESS: 'Lấy thông tin người dùng thành công'
+  GET_ME_SUCCESS: 'Lấy thông tin người dùng thành công',
+  USER_GET_PROFILE_SUCCESS: 'Lấy thống tin tài khoản thành công'
 }
 
 export const MEDIA_MESSAGE = {
