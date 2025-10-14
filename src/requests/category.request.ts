@@ -9,6 +9,7 @@ export interface UpdateCategoryRequestBody {
 }
 
 export interface CategoryQueryParams {
-  limit: string
-  page: string
+  limit?: string
+  page?: string
+  search?: string
 }

@@ -46,41 +46,38 @@ export const deleteCategoryController = async (
   })
 }
 
-// --- Get All Category ---
-export const getAllCategoriesController = async (
+// -- Get Categories ---
+export const getCategoriesController = async (
   req: Request<ParamsDictionary, any, any, CategoryQueryParams>,
   res: Response,
   next: NextFunction
 ) => {
   const limit = Number(req.query.limit as string)
   const page = Number(req.query.page as string)
-  const result = await categoryService.getAllCategories({ limit, page })
-  return res.status(HTTP_STATUS.OK).json({
-    message: CATEGORY_MESSAGE.GET_CATEGORY_ALL_SUCCESS,
-    data: {
-      categories: result.data,
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        total_page: result.total_page
+  const search = req.query.search as string
+  const result = await categoryService.getCategories({ limit, page, search })
+  const queryParams = (Boolean(limit) && Boolean(page)) || Boolean(search)
+  const { data, total_page } = result
+  if (queryParams) {
+    return res.status(HTTP_STATUS.OK).json({
+      message: CATEGORY_MESSAGE.GET_CATEGORY_ALL_SUCCESS,
+      data: {
+        categories: data,
+        pagination: {
+          page: page,
+          limit: limit,
+          total_page: total_page
+        }
       }
-    }
-  })
-}
-
-// -- Get Categories ---
-export const getCategoriesController = async (
-  req: Request<ParamsDictionary, any, any>,
-  res: Response,
-  next: NextFunction
-) => {
-  const result = await categoryService.getCategories()
-  return res.status(HTTP_STATUS.OK).json({
-    message: CATEGORY_MESSAGE.GET_CATEGORY_ALL_SUCCESS,
-    data: {
-      categories: result
-    }
-  })
+    })
+  } else {
+    return res.status(HTTP_STATUS.OK).json({
+      message: CATEGORY_MESSAGE.GET_CATEGORY_ALL_SUCCESS,
+      data: {
+        categories: data
+      }
+    })
+  }
 }
 
 // --- Get Category Detail ---

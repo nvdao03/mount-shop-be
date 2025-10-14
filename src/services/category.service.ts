@@ -1,7 +1,7 @@
 import { db } from '~/configs/postgreSQL.config'
 import { brands, brands_categories, categories } from '~/db/schema'
 import { AddCategoryRequestBody, UpdateCategoryRequestBody } from '~/requests/category.request'
-import { eq, count } from 'drizzle-orm'
+import { eq, count, ilike, and } from 'drizzle-orm'
 
 class CategoryService {
   // --- Add Category ---
@@ -29,9 +29,11 @@ class CategoryService {
     return category
   }
 
-  // --- Get All Category ---
-  async getAllCategories({ limit, page }: { limit: number; page: number }) {
+  // --- Get categories ---
+  async getCategories({ limit, page, search }: { limit: number; page: number; search: string }) {
+    const conditions: any[] = []
     const offset = limit * (page - 1)
+    if (search) conditions.push(ilike(categories.name, `%${search}%`))
     const [data, [{ total }]] = await Promise.all([
       db
         .select({
@@ -40,15 +42,17 @@ class CategoryService {
           image: categories.image
         })
         .from(categories)
+        .where(and(...conditions))
         .limit(limit)
         .offset(offset),
-      db.select({ total: count(categories.id) }).from(categories)
+      db
+        .select({ total: count() })
+        .from(categories)
+        .where(and(...conditions))
     ])
-    const total_page = Math.ceil(Number(total) / limit)
+    const total_page = Math.ceil(total / limit)
     return {
       data,
-      page,
-      limit,
       total_page
     }
   }
@@ -71,18 +75,6 @@ class CategoryService {
       .innerJoin(brands_categories, eq(brands_categories.brand_id, brands.id))
       .where(eq(brands_categories.category_id, category_id))
     return brand
-  }
-
-  // --- Get categories ---
-  async getCategories() {
-    const data = await db
-      .select({
-        id: categories.id,
-        name: categories.name,
-        image: categories.image
-      })
-      .from(categories)
-    return data
   }
 }
 
