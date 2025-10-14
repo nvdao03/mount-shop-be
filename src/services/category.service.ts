@@ -1,7 +1,7 @@
 import { db } from '~/configs/postgreSQL.config'
 import { brands, brands_categories, categories } from '~/db/schema'
 import { AddCategoryRequestBody, UpdateCategoryRequestBody } from '~/requests/category.request'
-import { eq, count, ilike, and } from 'drizzle-orm'
+import { eq, count, ilike, and, ne } from 'drizzle-orm'
 
 class CategoryService {
   // --- Add Category ---

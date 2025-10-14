@@ -103,7 +103,20 @@ export const addCategoryValidator = validate(
 export const updateCategoryValidator = validate(
   checkSchema(
     {
-      name: nameCategorySchema,
+      name: {
+        isString: true,
+        notEmpty: {
+          errorMessage: CATEGORY_MESSAGE.CATEGORY_NAME_NOT_EMPTY
+        },
+        isLength: {
+          options: {
+            min: 2,
+            max: 180
+          },
+          errorMessage: CATEGORY_MESSAGE.CATEGORY_NAME_INVALID_LENGTH
+        },
+        trim: true
+      },
       image: imageCategorySchema
     },
     ['body']
