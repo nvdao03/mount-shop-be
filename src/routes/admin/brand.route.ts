@@ -2,8 +2,8 @@ import { Router } from 'express'
 import {
   addBrandController,
   deleteBrandController,
-  getAllBrandsController,
   getBrandDetailController,
+  getBrandsController,
   updateBrandController
 } from '~/controllers/brand.controller'
 import { accessTokenValidator, verifyAdminValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
@@ -11,6 +11,9 @@ import { addBrandValidator, checkBrandId, updateBrandValidator } from '~/middlew
 import { wrapHandler } from '~/utils/wrapHanler'
 
 const router = Router()
+
+// --- Get Brands ---
+router.get('/', accessTokenValidator, verifyUserValidator, verifyAdminValidator, wrapHandler(getBrandsController))
 
 // --- Add Brand ---
 router.post(
@@ -42,9 +45,6 @@ router.delete(
   checkBrandId,
   wrapHandler(deleteBrandController)
 )
-
-// --- Get All Brand ---
-router.get('/', accessTokenValidator, verifyUserValidator, verifyAdminValidator, wrapHandler(getAllBrandsController))
 
 // --- Get Brand Detail ---
 router.get(

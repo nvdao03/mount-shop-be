@@ -68,15 +68,15 @@ export const getBrandDetailController = async (
   })
 }
 
-// --- Get All Brands ---
-export const getAllBrandsController = async (
+// --- Get Brands ---
+export const getBrandsController = async (
   req: Request<ParamsDictionary, any, any, BrandQueryParams>,
   res: Response,
   next: NextFunction
 ) => {
   const limit = Number(req.query.limit as string)
   const page = Number(req.query.page as string)
-  const result = await brandService.getAllBrands({ limit, page })
+  const result = await brandService.getBrands({ limit, page })
   return res.status(HTTP_STATUS.OK).json({
     message: BRAND_MESSAGE.GET_ALL_BRANDS_SUCCESS,
     data: {

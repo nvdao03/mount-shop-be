@@ -60,7 +60,7 @@ class BrandService {
   }
 
   // --- Get All Brands ---
-  async getAllBrands({ limit, page }: { limit: number; page: number }) {
+  async getBrands({ limit, page }: { limit: number; page: number }) {
     const [data, [{ total }]] = await Promise.all([
       db
         .select()
