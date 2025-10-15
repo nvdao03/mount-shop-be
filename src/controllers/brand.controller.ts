@@ -76,7 +76,8 @@ export const getBrandsController = async (
 ) => {
   const limit = Number(req.query.limit as string)
   const page = Number(req.query.page as string)
-  const result = await brandService.getBrands({ limit, page })
+  const search = req.query.search as string
+  const result = await brandService.getBrands({ limit, page, search })
   return res.status(HTTP_STATUS.OK).json({
     message: BRAND_MESSAGE.GET_ALL_BRANDS_SUCCESS,
     data: {

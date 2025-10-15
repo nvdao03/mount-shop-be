@@ -1,5 +1,5 @@
 import { db } from '~/configs/postgreSQL.config'
-import { count, eq } from 'drizzle-orm'
+import { count, eq, ilike } from 'drizzle-orm'
 import { brands, brands_categories, categories } from '~/db/schema'
 import { AddBrandRequestBody, UpdateBrandRequestBody } from '~/requests/brand.request'
 
@@ -60,14 +60,18 @@ class BrandService {
   }
 
   // --- Get All Brands ---
-  async getBrands({ limit, page }: { limit: number; page: number }) {
+  async getBrands({ limit, page, search }: { limit: number; page: number; search: string }) {
     const [data, [{ total }]] = await Promise.all([
       db
         .select()
         .from(brands)
+        .where(ilike(brands.name, `%${search}%`))
         .limit(limit)
         .offset(limit * (page - 1)),
-      db.select({ total: count(brands.id) }).from(brands)
+      db
+        .select({ total: count() })
+        .from(brands)
+        .where(ilike(brands.name, `%${search}%`))
     ])
     const total_page = Math.ceil(Number(total) / limit)
     return {

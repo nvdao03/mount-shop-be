@@ -12,4 +12,5 @@ export interface UpdateBrandRequestBody {
 export interface BrandQueryParams {
   limit: string
   page: string
+  search?: string
 }
