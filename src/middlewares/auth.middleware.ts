@@ -408,7 +408,7 @@ export const verifyEmailValidator = validate(
             if (!value) {
               throw new ErrorStatus({
                 message: AUTH_MESSAGE.EMAIL_VERIFY_TOKEN_NOT_EMPTY,
-                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+                status: HTTP_STATUS.BAD_REQUEST
               })
             }
             try {
@@ -420,7 +420,7 @@ export const verifyEmailValidator = validate(
             } catch (error) {
               throw new ErrorStatus({
                 message: AUTH_MESSAGE.EMAIL_VERIFY_TOKEN_INVALID,
-                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+                status: HTTP_STATUS.BAD_REQUEST
               })
             }
             return true

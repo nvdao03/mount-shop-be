@@ -149,7 +149,7 @@ export const verifyEmailController = async (
     })
   }
   if (user.email_verify_token === '') {
-    return res.status(HTTP_STATUS.OK).json({ message: AUTH_MESSAGE.EMAIL_ALREADY_VERIFIED })
+    return res.status(HTTP_STATUS.CONFLICT).json({ message: AUTH_MESSAGE.EMAIL_ALREADY_VERIFIED })
   }
   const result = await authService.verifyEmail({
     user_id,

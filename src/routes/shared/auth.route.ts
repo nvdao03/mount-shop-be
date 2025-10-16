@@ -32,7 +32,7 @@ router.post('/login', loginValidator, wrapHandler(loginController))
 router.post('/logout', accessTokenValidator, refreshTokenValidator, wrapHandler(logoutController))
 
 // --- Change Password ---
-router.post(
+router.put(
   '/change-password',
   accessTokenValidator,
   verifyUserValidator,
