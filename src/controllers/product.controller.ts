@@ -26,7 +26,7 @@ export const addProductController = async (
       image: product.image,
       images: product.images,
       description: product.description,
-      discount_price: product.discount_price,
+      price_before_discount: product.price_before_discount,
       price: product.price,
       rating: product.rating,
       sold: product.sold,
@@ -62,7 +62,7 @@ export const updateProductController = async (
       image: product.image,
       images: product.images,
       description: product.description,
-      discount_price: product.discount_price,
+      price_before_discount: product.price_before_discount,
       price: product.price,
       rating: product.rating,
       sold: product.sold,
@@ -101,7 +101,7 @@ export const deleteProductController = async (
       image: productRes.image,
       images: productRes.images,
       description: productRes.description,
-      discount_price: productRes.discount_price,
+      price_before_discount: productRes.price_before_discount,
       price: productRes.price,
       rating: productRes.rating,
       sold: productRes.sold,
@@ -139,7 +139,7 @@ export const getProductDetailController = async (
       image: product.image,
       images: product.images,
       description: product.description,
-      discount_price: product.discount_price,
+      price_before_discount: product.price_before_discount,
       price: product.price,
       rating: product.rating,
       sold: product.sold,
@@ -154,29 +154,6 @@ export const getProductDetailController = async (
       },
       createAt: product.createdAt,
       updateAt: product.updatedAt
-    }
-  })
-}
-
-// --- Get All Products ---
-export const getAllProductsController = async (
-  req: Request<ParamsDictionary, any, any, ProductAllQueryParams>,
-  res: Response,
-  next: NextFunction
-) => {
-  const limit = Number(req.query.limit as string)
-  const page = Number(req.query.page as string)
-  const result = await productService.getAllProducts({ limit, page })
-  const { productList: products, total_page } = result
-  return res.status(HTTP_STATUS.OK).json({
-    message: PRODUCT_MESSAGE.GET_ALL_PRODUCTS_SUCCESS,
-    data: {
-      products,
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        total_page: total_page
-      }
     }
   })
 }

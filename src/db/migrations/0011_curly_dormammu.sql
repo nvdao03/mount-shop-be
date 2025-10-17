@@ -1,0 +1,1 @@
+ALTER TABLE "products" RENAME COLUMN "discount_price" TO "price_before_discount";

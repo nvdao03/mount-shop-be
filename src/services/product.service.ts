@@ -86,50 +86,6 @@ class ProductService {
     }
   }
 
-  // --- Get All Products ---
-  async getAllProducts({ limit, page }: { limit: number; page: number }) {
-    const offset = limit * (page - 1)
-    const [productList, [{ total }]] = await Promise.all([
-      db
-        .select({
-          id: products.id,
-          name: products.name,
-          image: products.image,
-          images: products.images,
-          description: products.description,
-          discount_price: products.discount_price,
-          price: products.price,
-          rating: products.rating,
-          sold: products.sold,
-          stock: products.stock,
-          category: {
-            id: categories.id,
-            name: categories.name
-          },
-          brand: {
-            id: brands.id,
-            name: brands.name
-          },
-          createdAt: products.createdAt,
-          updatedAt: products.updatedAt
-        })
-        .from(products)
-        .innerJoin(brands, eq(brands.id, products.brand_id))
-        .innerJoin(categories, eq(categories.id, products.category_id))
-        .orderBy(desc(products.createdAt))
-        .limit(limit)
-        .offset(offset),
-      db.select({ total: count() }).from(products)
-    ])
-    const total_page = Math.ceil(Number(total) / limit)
-    return {
-      productList,
-      page,
-      limit,
-      total_page
-    }
-  }
-
   // --- Get Products ---
   async getProducts(query: ProductQueryParams) {
     const { brands, search, min_price, max_price, order, rating, category } = query

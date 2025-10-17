@@ -81,7 +81,7 @@ export const products = pgTable(
     image: varchar('image', { length: 255 }).notNull(),
     images: varchar('images', { length: 255 }).array().notNull(),
     description: text('description').notNull(),
-    discount_price: integer('discount_price').default(0).notNull(),
+    price_before_discount: integer('price_before_discount').default(0).notNull(),
     price: integer('price').default(0).notNull(),
     rating: numeric('rating', { precision: 2, scale: 1 }).default('0').notNull(),
     sold: integer('sold').default(0).notNull(),

@@ -114,7 +114,7 @@ export const PRODUCT_MESSAGE = {
   PRODUCT_STOCK_INVALID_LENGTH: 'Số lượng sản phẩm trong kho phải có ít nhất 0',
   PRODUCT_IMAGES_MUST_BE_ARRAY: 'Hình ảnh sản phẩm phải là mảng',
   PRODUCT_PRICE_INVALID: 'Giá sản phẩm không hợp lệ',
-  PRODUCT_DISCOUNT_PRICE_INVALID: 'Giá sản phẩm trước đó không hợp lệ',
+  PRODUCT_DISCOUNT_PRICE_INVALID: 'Giá sản phẩm bán ra phải nhỏ hơn giá gốc',
   PRODUCT_DISCOUNT_PRICE_GT_PRICE: 'Giá sản phẩm trước đó phải nhỏ hơn giá sản phẩm',
   PRODUCT_RATING_INVALID: 'Số lượng sao không hợp lệ',
   PRODUCT_SOLD_INVALID: 'Số lượng sản phẩm đã bán không hợp lệ',

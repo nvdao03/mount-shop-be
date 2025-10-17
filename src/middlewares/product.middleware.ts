@@ -58,27 +58,27 @@ const priceProductSchema: ParamSchema = {
   },
   notEmpty: {
     errorMessage: PRODUCT_MESSAGE.PRODUCT_PRICE_NOT_EMPTY
-  }
-}
-
-const discountPriceProductSchema: ParamSchema = {
-  isInt: {
-    errorMessage: PRODUCT_MESSAGE.PRODUCT_DISCOUNT_PRICE_INVALID
   },
-  optional: true,
   custom: {
     options: (value, { req }) => {
-      const price = Number(req.body.price)
-      const discount_price = Number(value)
-      if (discount_price < price) {
+      const price_before_discount = Number(req.body.price_before_discount)
+      const price = Number(value)
+      if (price > price_before_discount) {
         throw new ErrorStatus({
-          message: PRODUCT_MESSAGE.PRODUCT_DISCOUNT_PRICE_GT_PRICE,
-          status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+          message: PRODUCT_MESSAGE.PRODUCT_PRICE_INVALID,
+          status: HTTP_STATUS.BAD_REQUEST
         })
       }
       return true
     }
   }
+}
+
+const priceBeforeDiscountProductSchema: ParamSchema = {
+  isInt: {
+    errorMessage: PRODUCT_MESSAGE.PRODUCT_DISCOUNT_PRICE_INVALID
+  },
+  optional: true
 }
 
 const soldProductSchema: ParamSchema = {
@@ -122,7 +122,7 @@ export const addProductValidator = validate(
       images: imagesProductSchema,
       description: descriptionProductSchema,
       price: priceProductSchema,
-      discount_price: discountPriceProductSchema,
+      price_before_discount: priceBeforeDiscountProductSchema,
       rating: ratingProductSchema,
       sold: soldProductSchema,
       stock: stockProductSchema,
@@ -174,7 +174,7 @@ export const updateProductValidator = validate(
       images: imagesProductSchema,
       description: descriptionProductSchema,
       price: priceProductSchema,
-      discount_price: discountPriceProductSchema,
+      price_before_discount: priceBeforeDiscountProductSchema,
       rating: ratingProductSchema,
       sold: soldProductSchema,
       stock: stockProductSchema,

@@ -2,7 +2,6 @@ import { Router } from 'express'
 import {
   addProductController,
   deleteProductController,
-  getAllProductsController,
   updateProductController
 } from '~/controllers/product.controller'
 import { accessTokenValidator, verifyAdminValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
@@ -22,7 +21,7 @@ router.post(
 )
 
 // --- Update Product ---
-router.post(
+router.put(
   '/:product_id',
   accessTokenValidator,
   verifyUserValidator,
@@ -41,8 +40,5 @@ router.delete(
   checkProductId,
   wrapHandler(deleteProductController)
 )
-
-// --- Get All Products ---
-router.get('/', accessTokenValidator, verifyUserValidator, verifyAdminValidator, wrapHandler(getAllProductsController))
 
 export default router
