@@ -63,7 +63,9 @@ const priceProductSchema: ParamSchema = {
     options: (value, { req }) => {
       const price_before_discount = Number(req.body.price_before_discount)
       const price = Number(value)
-      if (price > price_before_discount) {
+      if (price_before_discount === 0) {
+        return true
+      } else if (price > price_before_discount) {
         throw new ErrorStatus({
           message: PRODUCT_MESSAGE.PRODUCT_PRICE_INVALID,
           status: HTTP_STATUS.BAD_REQUEST
