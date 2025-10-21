@@ -23,3 +23,21 @@ export const addCommentController = async (
     }
   })
 }
+
+// --- Delete comment ---//
+export const deleteCmmentController = async (
+  req: Request<ParamsDictionary, any, AddCommentRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { comment_id } = req.params
+  const result = await commentService.deleteComment(Number(comment_id))
+  return res.status(HTTP_STATUS.OK).json({
+    message: COMMENT_MESSAGE.DELETE_COMMENT_SUCCESS,
+    data: {
+      comment: {
+        ...result
+      }
+    }
+  })
+}

@@ -134,5 +134,7 @@ export const COMMENT_MESSAGE = {
   COMMENT_NOT_EXISTS: 'Bình luận không tồn tại',
   COMMENT_ID_NOT_EMPTY: 'ID Bình luận không được để trống',
   COMMENT_CONTENT_NOT_EMPTY: 'Nội dung bình luận không được để trống',
-  ADD_COMMENT_SUCCESS: 'Thêm bình luận thành công'
+  ADD_COMMENT_SUCCESS: 'Thêm bình luận thành công',
+  COMMENT_ID_INVALID: 'ID bình luận không hợp lệ',
+  DELETE_COMMENT_SUCCESS: 'Xoá bình luận thành công'
 }

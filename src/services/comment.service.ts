@@ -1,3 +1,4 @@
+import { eq } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { comments } from '~/db/schema'
 import { AddCommentRequestBody } from '~/requests/comment.request'
@@ -12,6 +13,12 @@ class CommentService {
         user_id
       })
       .returning()
+    return comment
+  }
+
+  // --- Delete Comment ---
+  async deleteComment(comment_id: number) {
+    const [comment] = await db.delete(comments).where(eq(comments.id, comment_id)).returning()
     return comment
   }
 }
