@@ -166,13 +166,14 @@ export const getProductsController = async (
 ) => {
   const query = req.query
   const result = await productService.getProducts(query)
-  const { productList, page, limit, total_page } = result
+  const { productList, page, limit, total_page, total } = result
   return res.status(HTTP_STATUS.OK).json({
     message: PRODUCT_MESSAGE.GET_PRODUCTS_SUCCESS,
     data: {
       products: productList,
       pagination: {
         page: page,
+        total: total,
         limit: limit,
         total_page: total_page
       }

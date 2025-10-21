@@ -128,3 +128,11 @@ export const PRODUCT_MESSAGE = {
   GET_ALL_PRODUCTS_SUCCESS: 'Lấy danh sách sản phẩm thành công',
   GET_PRODUCTS_SUCCESS: 'Lấy danh sách sản phẩm thành công'
 }
+
+export const COMMENT_MESSAGE = {
+  COMMENT_NOT_FOUND: 'Không tìm thấy bình luận',
+  COMMENT_NOT_EXISTS: 'Bình luận không tồn tại',
+  COMMENT_ID_NOT_EMPTY: 'ID Bình luận không được để trống',
+  COMMENT_CONTENT_NOT_EMPTY: 'Nội dung bình luận không được để trống',
+  ADD_COMMENT_SUCCESS: 'Thêm bình luận thành công'
+}

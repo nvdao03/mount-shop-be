@@ -151,6 +151,7 @@ class ProductService {
     return {
       productList,
       page,
+      total,
       limit,
       total_page
     }
