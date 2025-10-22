@@ -53,3 +53,21 @@ export const getUsersController = async (
     }
   })
 }
+
+// --- Delete User ---
+export const deleteUserController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const user_id = Number(req.params.user_id)
+  const result = await userService.deleteUser(user_id)
+  return res.status(HTTP_STATUS.OK).json({
+    message: USER_MESSAGE.DELETE_USER_SUCCESS,
+    data: {
+      user: {
+        ...result
+      }
+    }
+  })
+}

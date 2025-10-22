@@ -105,6 +105,12 @@ class UserService {
       total_page
     }
   }
+
+  // --- Delete User --- //
+  async deleteUser(user_id: number) {
+    const [user] = await db.delete(users).where(eq(users.id, user_id)).returning()
+    return user
+  }
 }
 
 const userService = new UserService()

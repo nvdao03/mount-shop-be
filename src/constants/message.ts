@@ -55,7 +55,8 @@ export const USER_MESSAGE = {
   AVATAR_INVALID: 'Avatar không hợp lệ',
   ADDRESS_INVALID_LENGTH: 'Địa chỉ phải có ít nhất 2 - 180 ký tự',
   USER_UPDATE_PROFILE_SUCCESS: 'Cập nhật thống tin tài khoản thành công',
-  GET_USERS_SUCCESS: 'Lấy danh sách người dùng thành công'
+  GET_USERS_SUCCESS: 'Lấy danh sách người dùng thành công',
+  DELETE_USER_SUCCESS: 'Xoá người dùng thành Công'
 }
 
 export const MEDIA_MESSAGE = {
