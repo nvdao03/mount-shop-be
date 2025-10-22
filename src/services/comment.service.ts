@@ -31,12 +31,14 @@ class CommentService {
           id: comments.id,
           content: comments.content,
           user_id: comments.user_id,
+          avatar: users.avatar,
           full_name: addresses.full_name,
           createdAt: comments.createdAt,
           updatedAt: comments.updatedAt
         })
         .from(comments)
         .innerJoin(addresses, and(eq(addresses.user_id, comments.user_id), eq(addresses.is_default, true)))
+        .innerJoin(users, eq(comments.user_id, users.id))
         .where(eq(comments.product_id, product_id))
         .limit(limit)
         .offset(offset),
@@ -63,12 +65,14 @@ class CommentService {
           id: comments.id,
           content: comments.content,
           user_id: comments.user_id,
+          avatar: users.avatar,
           full_name: addresses.full_name,
           createdAt: comments.createdAt,
           updatedAt: comments.updatedAt
         })
         .from(comments)
         .innerJoin(addresses, eq(comments.user_id, addresses.user_id))
+        .innerJoin(users, eq(comments.user_id, users.id))
         .where(whereConditions)
         .limit(limit)
         .offset(offset),

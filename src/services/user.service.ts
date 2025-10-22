@@ -1,4 +1,4 @@
-import { eq, and } from 'drizzle-orm'
+import { eq, and, ilike, or, count } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { addresses, roles, users } from '~/db/schema'
 import { UpdateProfileRequestBody } from '~/requests/user.request'
@@ -67,6 +67,43 @@ class UserService {
       .where(and(eq(addresses.is_default, true), eq(users.id, user_id)))
       .limit(1)
     return user
+  }
+
+  // --- Get Users --- //
+  async getUsers({ limit, page, search }: { limit: number; page: number; search: string }) {
+    const offset = limit * (page - 1)
+    const conditions: any[] = []
+    if (search && search.trim() !== '') {
+      conditions.push(or(ilike(users.email, `%${search}%`), ilike(addresses.full_name, `%${search}%`)))
+    }
+    const whereConditions = conditions.length > 0 ? and(...conditions) : undefined
+    const [userList, [{ total }]] = await Promise.all([
+      db
+        .select({
+          id: users.id,
+          full_name: addresses.full_name,
+          email: users.email,
+          avatar: users.avatar,
+          role: roles.name,
+          role_id: roles.id
+        })
+        .from(users)
+        .innerJoin(roles, eq(roles.id, users.role_id))
+        .innerJoin(addresses, and(eq(addresses.user_id, users.id), eq(addresses.is_default, true)))
+        .limit(limit)
+        .offset(offset)
+        .where(whereConditions),
+      db
+        .select({ total: count() })
+        .from(users)
+        .innerJoin(addresses, and(eq(addresses.user_id, users.id), eq(addresses.is_default, true)))
+        .where(whereConditions)
+    ])
+    const total_page = Math.ceil(Number(total) / limit)
+    return {
+      userList,
+      total_page
+    }
   }
 }
 

@@ -54,7 +54,8 @@ export const USER_MESSAGE = {
   PHONE_INVALID_LENGTH: 'Số điện thoại phải có ít nhất 10 - 20 ký tự',
   AVATAR_INVALID: 'Avatar không hợp lệ',
   ADDRESS_INVALID_LENGTH: 'Địa chỉ phải có ít nhất 2 - 180 ký tự',
-  USER_UPDATE_PROFILE_SUCCESS: 'Cập nhật thống tin tài khoản thành công'
+  USER_UPDATE_PROFILE_SUCCESS: 'Cập nhật thống tin tài khoản thành công',
+  GET_USERS_SUCCESS: 'Lấy danh sách người dùng thành công'
 }
 
 export const MEDIA_MESSAGE = {
