@@ -1,6 +1,7 @@
 import { Router } from 'express'
-import { deleteUserController, getUsersController } from '~/controllers/user.controller'
+import { deleteUserController, getUsersController, updateUserRoleController } from '~/controllers/user.controller'
 import { accessTokenValidator, verifyAdminValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
+import { updateUserRoleValidator } from '~/middlewares/user.middleware'
 import { wrapHandler } from '~/utils/wrapHanler'
 
 const router = Router()
@@ -14,6 +15,15 @@ router.delete(
   verifyUserValidator,
   verifyAdminValidator,
   wrapHandler(deleteUserController)
+)
+// --- Update User Role ---
+router.put(
+  '/',
+  accessTokenValidator,
+  verifyUserValidator,
+  verifyAdminValidator,
+  updateUserRoleValidator,
+  wrapHandler(updateUserRoleController)
 )
 
 export default router

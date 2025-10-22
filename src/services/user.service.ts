@@ -1,7 +1,8 @@
 import { eq, and, ilike, or, count } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
+import { UserVerifyStatus } from '~/constants/enum'
 import { addresses, roles, users } from '~/db/schema'
-import { UpdateProfileRequestBody } from '~/requests/user.request'
+import { UpdateProfileRequestBody, UpdateUserRoleRequestBody } from '~/requests/user.request'
 
 class UserService {
   // --- Get Me ---
@@ -109,6 +110,22 @@ class UserService {
   // --- Delete User --- //
   async deleteUser(user_id: number) {
     const [user] = await db.delete(users).where(eq(users.id, user_id)).returning()
+    return user
+  }
+
+  // --- Update User Role --- //
+  async updateUserRole(data: UpdateUserRoleRequestBody) {
+    const { role_id, user_id } = data
+    const [user] = await db
+      .update(users)
+      .set({
+        email_verify_token: '',
+        verify: UserVerifyStatus.Verifyed,
+        role_id,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, user_id))
+      .returning()
     return user
   }
 }

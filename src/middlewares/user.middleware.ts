@@ -1,5 +1,10 @@
+import { eq } from 'drizzle-orm'
 import { checkSchema } from 'express-validator'
+import { db } from '~/configs/postgreSQL.config'
+import { HTTP_STATUS } from '~/constants/httpStatus'
 import { AUTH_MESSAGE, USER_MESSAGE } from '~/constants/message'
+import { roles, users } from '~/db/schema'
+import { ErrorStatus } from '~/utils/Errors'
 import { validate } from '~/utils/validation'
 
 // --- Update profile validator ---
@@ -44,6 +49,55 @@ export const updateProfileValidator = validate(
         trim: true,
         optional: {
           options: { nullable: true, checkFalsy: true }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+// --- Update user role validator ---
+export const updateUserRoleValidator = validate(
+  checkSchema(
+    {
+      user_id: {
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                message: USER_MESSAGE.USER_ID_NOT_EMPTY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            const [user] = await db.select().from(users).where(eq(users.id, value)).limit(1)
+            if (!user) {
+              throw new ErrorStatus({
+                message: USER_MESSAGE.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            return true
+          }
+        }
+      },
+      role_id: {
+        custom: {
+          options: async (values, { req }) => {
+            if (!values) {
+              throw new ErrorStatus({
+                message: USER_MESSAGE.ROLE_ID_NOT_EMPTY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            const [role] = await db.select().from(roles).where(eq(roles.id, values)).limit(1)
+            if (!role) {
+              throw new ErrorStatus({
+                message: USER_MESSAGE.ROLE_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            return true
+          }
         }
       }
     },

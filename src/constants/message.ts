@@ -56,7 +56,13 @@ export const USER_MESSAGE = {
   ADDRESS_INVALID_LENGTH: 'Địa chỉ phải có ít nhất 2 - 180 ký tự',
   USER_UPDATE_PROFILE_SUCCESS: 'Cập nhật thống tin tài khoản thành công',
   GET_USERS_SUCCESS: 'Lấy danh sách người dùng thành công',
-  DELETE_USER_SUCCESS: 'Xoá người dùng thành Công'
+  DELETE_USER_SUCCESS: 'Xoá người dùng thành công',
+  USER_ID_INVALID: 'ID người dùng không hợp lệ',
+  USER_ID_NOT_EMPTY: 'ID người dùng không được để trống',
+  ROLE_ID_INVALID: 'ID quyền người dùng không hợp lệ',
+  ROLE_ID_NOT_EMPTY: 'ID quyền người dùng không được để trống',
+  ROLE_NOT_FOUND: 'Không tìm thấy quyền người dùng',
+  UPDATE_USER_ROLE_SUCCESS: 'Cập nhật quyền người dùng thành công'
 }
 
 export const MEDIA_MESSAGE = {

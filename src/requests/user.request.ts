@@ -5,6 +5,11 @@ export interface UpdateProfileRequestBody {
   address?: string
 }
 
+export interface UpdateUserRoleRequestBody {
+  user_id: number
+  role_id: number
+}
+
 export interface GetUsersQueryParams {
   limit: string
   page: string

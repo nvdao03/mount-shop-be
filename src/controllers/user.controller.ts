@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { TokenPayload } from '~/requests/auth.request'
 import userService from '~/services/user.service'
-import { GetUsersQueryParams, UpdateProfileRequestBody } from '~/requests/user.request'
+import { GetUsersQueryParams, UpdateProfileRequestBody, UpdateUserRoleRequestBody } from '~/requests/user.request'
 
 // --- Get Profile ---
 export const getProfileController = async (req: Request, res: Response, next: NextFunction) => {
@@ -64,6 +64,22 @@ export const deleteUserController = async (
   const result = await userService.deleteUser(user_id)
   return res.status(HTTP_STATUS.OK).json({
     message: USER_MESSAGE.DELETE_USER_SUCCESS,
+    data: {
+      user: {
+        ...result
+      }
+    }
+  })
+}
+
+export const updateUserRoleController = async (
+  req: Request<ParamsDictionary, any, UpdateUserRoleRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const result = await userService.updateUserRole(req.body)
+  return res.status(HTTP_STATUS.OK).json({
+    message: USER_MESSAGE.UPDATE_USER_ROLE_SUCCESS,
     data: {
       user: {
         ...result
