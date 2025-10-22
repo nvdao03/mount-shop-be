@@ -136,5 +136,6 @@ export const COMMENT_MESSAGE = {
   COMMENT_CONTENT_NOT_EMPTY: 'Nội dung bình luận không được để trống',
   ADD_COMMENT_SUCCESS: 'Thêm bình luận thành công',
   COMMENT_ID_INVALID: 'ID bình luận không hợp lệ',
-  DELETE_COMMENT_SUCCESS: 'Xoá bình luận thành công'
+  DELETE_COMMENT_SUCCESS: 'Xoá bình luận thành công',
+  GET_COMMENT_SUCCESS: 'Lấy danh sách bình luận thành công'
 }

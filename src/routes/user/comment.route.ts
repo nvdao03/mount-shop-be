@@ -18,10 +18,4 @@ router.delete(
   wrapHandler(deleteCmmentController)
 )
 
-// --- Update Comment ---
-router.put('/:comment_id')
-
-// --- Get Comments ---
-router.get('/')
-
 export default router
