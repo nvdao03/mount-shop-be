@@ -16,7 +16,7 @@ import { NextFunction, Request, Response } from 'express'
 import { Roles, UserVerifyStatus } from '~/constants/enum'
 
 // --- Common schema ---
-const passwordSchema: ParamSchema = {
+export const passwordSchema: ParamSchema = {
   isString: true,
   isLength: {
     options: {
@@ -28,7 +28,7 @@ const passwordSchema: ParamSchema = {
   trim: true
 }
 
-const confirmPasswordSchema: ParamSchema = {
+export const confirmPasswordSchema: ParamSchema = {
   isString: true,
   isLength: {
     options: {
@@ -51,7 +51,7 @@ const confirmPasswordSchema: ParamSchema = {
   }
 }
 
-const forgotPasswordTokenSchema: ParamSchema = {
+export const forgotPasswordTokenSchema: ParamSchema = {
   isString: true,
   trim: true,
   custom: {

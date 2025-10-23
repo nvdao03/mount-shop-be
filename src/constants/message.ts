@@ -62,7 +62,12 @@ export const USER_MESSAGE = {
   ROLE_ID_INVALID: 'ID quyền người dùng không hợp lệ',
   ROLE_ID_NOT_EMPTY: 'ID quyền người dùng không được để trống',
   ROLE_NOT_FOUND: 'Không tìm thấy quyền người dùng',
-  UPDATE_USER_ROLE_SUCCESS: 'Cập nhật quyền người dùng thành công'
+  UPDATE_USER_ROLE_SUCCESS: 'Cập nhật quyền người dùng thành công',
+  ADMIN_ADD_USER_SUCCESS: 'Thêm người dùng mới thành công'
+}
+
+export const ROLE_MESSAGES = {
+  GET_ROLES_SUCCESS: 'Lấy danh sách quyền thành công'
 }
 
 export const MEDIA_MESSAGE = {

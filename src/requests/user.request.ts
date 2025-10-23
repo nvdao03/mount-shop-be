@@ -15,3 +15,10 @@ export interface GetUsersQueryParams {
   page: string
   search?: string
 }
+
+export interface AdminAddUserRequestBody {
+  email: string
+  full_name: string
+  password: string
+  role_id: number
+}

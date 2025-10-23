@@ -80,15 +80,7 @@ class AuthService {
   }
 
   // --- Sign Email Verify Token ---
-  private async signEmailVerifyToken({
-    user_id,
-    verify,
-    role
-  }: {
-    user_id: number
-    verify: UserVerifyStatus
-    role: string
-  }) {
+  async signEmailVerifyToken({ user_id, verify, role }: { user_id: number; verify: UserVerifyStatus; role: string }) {
     return signToken({
       payload: {
         user_id,
