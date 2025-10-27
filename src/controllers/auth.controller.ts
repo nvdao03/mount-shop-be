@@ -1,3 +1,4 @@
+import { refresh_tokens } from './../db/schema'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { eq } from 'drizzle-orm'
 import { NextFunction, Request, Response } from 'express'
@@ -19,6 +20,7 @@ import { AUTH_MESSAGE } from '~/constants/message'
 import { User, users } from '~/db/schema'
 import { UserVerifyStatus } from '~/constants/enum'
 import { db } from '~/configs/postgreSQL.config'
+import '../configs/env.config'
 
 // --- Register ---
 export const registerController = async (
@@ -205,4 +207,26 @@ export const refreshTokenController = async (
       }
     }
   })
+}
+
+// --- OAuth Google ---
+export const oauthController = async (req: Request, res: Response, next: NextFunction) => {
+  const { code } = req.query
+  const result = await authService.oauthGoogle(code as string)
+  const { access_token, refresh_token, decoded_access_token, decoded_refresh_token, role, address, user } = result
+  const urlRedirect = `${process.env.GOOGLE_CLIENT_REDIRECT_URL}`
+  const queryParam = new URLSearchParams({
+    access_token: access_token,
+    expires_access_token: decoded_access_token.exp.toString(),
+    refresh_token: refresh_token,
+    expries_refresh_token: decoded_refresh_token.exp.toString(),
+    id: user.id.toString(),
+    role: role.name,
+    email: user.email,
+    full_name: address.full_name,
+    avatar: user.avatar || '',
+    created_at: user.createdAt?.toISOString() || '',
+    updated_at: user.updatedAt?.toISOString() || ''
+  })
+  return res.redirect(`${urlRedirect}?${queryParam.toString()}`)
 }

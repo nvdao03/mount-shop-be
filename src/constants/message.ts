@@ -43,7 +43,8 @@ export const AUTH_MESSAGE = {
   EMAIL_VERIFIED_SUCCESS: 'Xác thực email thành công',
   USER_NOT_FOUND: 'Không tìm thấy tài khoản',
   REFRESH_TOKEN_SUCCESS: 'refresh token thành công',
-  USER_NOT_ADMIN: 'Tài khoản không phải là admin'
+  USER_NOT_ADMIN: 'Tài khoản không phải là admin',
+  GOOGLE_OAUTH_EMAIL_NOT_VERIFIED: 'Email từ Google chưa được xác thực'
 }
 
 export const USER_MESSAGE = {

@@ -4,6 +4,7 @@ import {
   forgotPasswordController,
   loginController,
   logoutController,
+  oauthController,
   refreshTokenController,
   registerController,
   resetPasswordController,
@@ -52,6 +53,6 @@ router.post('/verify-email', verifyEmailValidator, wrapHandler(verifyEmailContro
 router.post('/refresh-token', refreshTokenValidator, wrapHandler(refreshTokenController))
 
 // --- Google Oauth ---
-router.get('/oauth/google')
+router.get('/oauth/google', wrapHandler(oauthController))
 
 export default router

@@ -10,6 +10,9 @@ import hashPassword from '~/utils/crypto'
 import { AUTH_MESSAGE } from '~/constants/message'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { sendEmail, sendForgotPasswordEmail, sendVerifyEmail } from '~/utils/email'
+import axios from 'axios'
+import { ErrorStatus } from '~/utils/Errors'
+import { HTTP_STATUS } from '~/constants/httpStatus'
 
 class AuthService {
   // --- Sign Access Token ---
@@ -407,6 +410,159 @@ class AuthService {
       decoded_refresh_token,
       user,
       address
+    }
+  }
+
+  // --- OAuth Google ---
+  private async getOauthToken(code: string) {
+    const body = {
+      code,
+      client_id: process.env.GOOGLE_OAUTH_CLIENT_ID as string,
+      client_secret: process.env.GOOGLE_OAUTH_CLIENT_SECRET as string,
+      redirect_uri: process.env.GOOGLE_OAUTH_REDIRECT_URI as string,
+      grant_type: 'authorization_code'
+    }
+
+    const { data } = await axios.post('https://oauth2.googleapis.com/token', body, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+
+    return data as {
+      access_token: string
+      id_token: string
+    }
+  }
+
+  private async getOauthUserInfo(access_token: string, id_token: string) {
+    const { data } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+      params: {
+        access_token,
+        alt: 'json'
+      },
+      headers: {
+        Authorization: `Bearer ${id_token}`
+      }
+    })
+    return data as {
+      id: string
+      email: string
+      verified_email: boolean
+      name: string
+      given_name: string
+      family_name: string
+      picture: string
+    }
+  }
+
+  async oauthGoogle(code: string) {
+    const { access_token, id_token } = await this.getOauthToken(code)
+    const usetInfo = await this.getOauthUserInfo(access_token, id_token)
+    if (!usetInfo.verified_email) {
+      throw new ErrorStatus({
+        message: AUTH_MESSAGE.GOOGLE_OAUTH_EMAIL_NOT_VERIFIED,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+    const [user] = await db.select().from(users).where(eq(users.email, usetInfo.email)).limit(1)
+    if (user) {
+      const [role] = await db.select().from(roles).where(eq(roles.id, user.role_id)).limit(1)
+      const [access_token, refresh_token] = await Promise.all([
+        this.signAccessToken({ user_id: user.id, verify: user.verify as UserVerifyStatus, role: role.name }),
+        this.signRefreshToken({ user_id: user.id, verify: user.verify as UserVerifyStatus, role: role.name })
+      ])
+      const [decoded_access_token, decoded_refresh_token] = await Promise.all<TokenPayload>([
+        verifyToken({
+          token: access_token,
+          secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+        }),
+        verifyToken({
+          token: refresh_token,
+          secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+        })
+      ])
+      const [[address]] = await Promise.all([
+        await db
+          .select()
+          .from(addresses)
+          .where(and(eq(addresses.user_id, user.id), eq(addresses.is_default, true)))
+          .limit(1),
+        await db.insert(refresh_tokens).values({
+          token: refresh_token,
+          user_id: user.id,
+          iat: new Date(decoded_refresh_token.iat * 1000),
+          exp: new Date(decoded_refresh_token.exp * 1000)
+        })
+      ])
+      return {
+        user: user,
+        access_token,
+        refresh_token,
+        decoded_access_token,
+        decoded_refresh_token,
+        role,
+        address
+      }
+    } else {
+      const password = Math.random().toString(36).substring(2, 15)
+      const [role] = await db.select().from(roles).where(eq(roles.name, 'customer')).limit(1)
+      const [insertedUser] = await db
+        .insert(users)
+        .values({
+          email: usetInfo.email,
+          password: hashPassword(password),
+          role_id: role.id,
+          verify: UserVerifyStatus.Verifyed,
+          email_verify_token: '',
+          avatar: usetInfo.picture || ''
+        })
+        .returning()
+      const [address] = await db
+        .insert(addresses)
+        .values({
+          user_id: insertedUser.id,
+          full_name: usetInfo.name,
+          is_default: true
+        })
+        .returning()
+      const [access_token, refresh_token] = await Promise.all([
+        this.signAccessToken({
+          user_id: insertedUser.id,
+          verify: insertedUser.verify as UserVerifyStatus,
+          role: role.name
+        }),
+        this.signRefreshToken({
+          user_id: insertedUser.id,
+          verify: insertedUser.verify as UserVerifyStatus,
+          role: role.name
+        })
+      ])
+      const [decoded_access_token, decoded_refresh_token] = await Promise.all<TokenPayload>([
+        verifyToken({
+          token: access_token,
+          secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+        }),
+        verifyToken({
+          token: refresh_token,
+          secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+        })
+      ])
+      await db.insert(refresh_tokens).values({
+        token: refresh_token,
+        user_id: insertedUser.id,
+        iat: new Date(decoded_refresh_token.iat * 1000),
+        exp: new Date(decoded_refresh_token.exp * 1000)
+      })
+      return {
+        user: insertedUser,
+        access_token,
+        refresh_token,
+        decoded_access_token,
+        decoded_refresh_token,
+        role,
+        address
+      }
     }
   }
 }
