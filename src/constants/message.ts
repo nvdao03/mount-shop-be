@@ -158,5 +158,10 @@ export const COMMENT_MESSAGE = {
 
 export const CART_MESSAGE = {
   ADD_CART_SUCCESS: 'Thêm sản phẩm vào giỏ hàng thành công',
-  GET_CART_SUCCESS: 'Lấy sản phẩm trong giỏ hàng thành công'
+  GET_CART_SUCCESS: 'Lấy sản phẩm trong giỏ hàng thành công',
+  CART_ID_INVALID: 'ID giỏ hàng không hợp lệ',
+  CART_ID_NOT_EMPTY: 'ID giỏ hàng không được để trống',
+  CART_NOT_FOUND: 'Không tìm thấy giỏ hàng',
+  DELETE_CART_SUCCESS: 'Xoá sản phẩm trong giỏ hàng thành công',
+  UPDATE_CART_SUCCESS: 'Cập nhật sản phẩm trong giỏ hàng thành công'
 }

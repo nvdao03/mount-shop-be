@@ -1,6 +1,6 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
-import { AddCartRequestBody } from '~/requests/cart.request'
+import { AddCartRequestBody, UpdateCartRequestBody } from '~/requests/cart.request'
 import { TokenPayload } from '~/requests/auth.request'
 import cartService from '~/services/cart.service'
 import { HTTP_STATUS } from '~/constants/httpStatus'
@@ -38,6 +38,44 @@ export const getCartController = async (
     data: {
       carts: [...cartList],
       total
+    }
+  })
+}
+
+// --- Delete cart controller ---
+export const deleteCartController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const { cart_id } = req.params
+  const result = await cartService.deleteCart(user_id, Number(cart_id))
+  return res.status(HTTP_STATUS.OK).json({
+    message: CART_MESSAGE.DELETE_CART_SUCCESS,
+    data: {
+      cart: {
+        ...result
+      }
+    }
+  })
+}
+
+// --- Update cart controller ---
+export const updateCartController = async (
+  req: Request<ParamsDictionary, any, UpdateCartRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const { cart_id } = req.params
+  const result = await cartService.updateCart(user_id, req.body, Number(cart_id))
+  return res.status(HTTP_STATUS.OK).json({
+    message: CART_MESSAGE.UPDATE_CART_SUCCESS,
+    data: {
+      cart: {
+        ...result
+      }
     }
   })
 }

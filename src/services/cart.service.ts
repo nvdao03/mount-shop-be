@@ -1,7 +1,7 @@
 import { and, count, eq } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { carts, products } from '~/db/schema'
-import { AddCartRequestBody } from '~/requests/cart.request'
+import { AddCartRequestBody, UpdateCartRequestBody } from '~/requests/cart.request'
 
 class CartService {
   // --- Add Cart ---
@@ -58,6 +58,26 @@ class CartService {
       cartList,
       total
     }
+  }
+
+  // --- Delete Cart ---
+  async deleteCart(user_id: number, cart_id: number) {
+    const [cart] = await db
+      .delete(carts)
+      .where(and(eq(carts.user_id, user_id), eq(carts.id, cart_id)))
+      .returning()
+    return cart
+  }
+
+  // --- Update Cart ---
+  async updateCart(user_id: number, data: UpdateCartRequestBody, cart_id: number) {
+    const { quantity } = data
+    const [cart] = await db
+      .update(carts)
+      .set({ quantity })
+      .where(and(eq(carts.user_id, user_id), eq(carts.id, cart_id), eq(carts.user_id, user_id)))
+      .returning()
+    return cart
   }
 }
 
