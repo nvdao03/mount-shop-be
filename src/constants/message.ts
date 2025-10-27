@@ -140,7 +140,9 @@ export const PRODUCT_MESSAGE = {
   PRODUCT_ID_INVALID: 'ID sản phẩm không hợp lệ',
   GET_PRODUCT_DETAIL_SUCCESS: 'Lấy chi tiết sản phẩm thành công',
   GET_ALL_PRODUCTS_SUCCESS: 'Lấy danh sách sản phẩm thành công',
-  GET_PRODUCTS_SUCCESS: 'Lấy danh sách sản phẩm thành công'
+  GET_PRODUCTS_SUCCESS: 'Lấy danh sách sản phẩm thành công',
+  PRODUCT_QUANTITY_INVALID: 'Số lượng sản phẩm không hợp lệ',
+  PRODUCT_QUANTITY_NOT_EMPTY: 'Số lượng sản phẩm không được để trống'
 }
 
 export const COMMENT_MESSAGE = {
@@ -152,4 +154,8 @@ export const COMMENT_MESSAGE = {
   COMMENT_ID_INVALID: 'ID bình luận không hợp lệ',
   DELETE_COMMENT_SUCCESS: 'Xoá bình luận thành công',
   GET_COMMENT_SUCCESS: 'Lấy danh sách bình luận thành công'
+}
+
+export const CART_MESSAGE = {
+  ADD_CART_SUCCESS: 'Thêm sản phẩm vào giỏ hàng thành công'
 }

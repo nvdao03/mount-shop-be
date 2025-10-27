@@ -122,6 +122,15 @@ export const comments = pgTable('comments', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 })
 
+export const carts = pgTable('carts', {
+  id: serial('id').primaryKey(),
+  user_id: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  product_id: integer('product_id').references(() => products.id, { onDelete: 'cascade' }),
+  quantity: integer('quantity').default(1).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
+
 // --- Types ---
 export type Role = InferModel<typeof roles>
 export type User = InferModel<typeof users>
