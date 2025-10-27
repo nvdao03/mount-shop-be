@@ -23,3 +23,21 @@ export const addCartController = async (
     }
   })
 }
+
+// --- Get carts controller ---
+export const getCartController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await cartService.getCarts(user_id)
+  const { cartList, total } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: CART_MESSAGE.GET_CART_SUCCESS,
+    data: {
+      carts: [...cartList],
+      total
+    }
+  })
+}

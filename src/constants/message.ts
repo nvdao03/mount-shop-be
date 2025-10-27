@@ -157,5 +157,6 @@ export const COMMENT_MESSAGE = {
 }
 
 export const CART_MESSAGE = {
-  ADD_CART_SUCCESS: 'Thêm sản phẩm vào giỏ hàng thành công'
+  ADD_CART_SUCCESS: 'Thêm sản phẩm vào giỏ hàng thành công',
+  GET_CART_SUCCESS: 'Lấy sản phẩm trong giỏ hàng thành công'
 }
