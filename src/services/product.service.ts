@@ -1,4 +1,4 @@
-import { count, desc, eq, and, inArray, ilike, gte, lte, lt, asc } from 'drizzle-orm'
+import { count, desc, eq, and, inArray, ilike, gte, lte, lt, asc, or } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { brands, categories, products } from '~/db/schema'
 import { AddProductRequestBody, ProductQueryParams, UpdateProductRequestBody } from '~/requests/product.request'

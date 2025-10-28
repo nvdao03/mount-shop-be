@@ -165,3 +165,15 @@ export const CART_MESSAGE = {
   DELETE_CART_SUCCESS: 'Xoá sản phẩm trong giỏ hàng thành công',
   UPDATE_CART_SUCCESS: 'Cập nhật sản phẩm trong giỏ hàng thành công'
 }
+
+export const ADDRESS_MESSAGE = {
+  ADD_ADDRESS_SUCCESS: 'Thêm địa chỉ thành công',
+  GET_ADDRESS_SUCCESS: 'Lấy danh sách địa chỉ thành công',
+  ADDRESS_ID_INVALID: 'ID địa chỉ không hợp lệ',
+  ADDRESS_ID_NOT_EMPTY: 'ID địa chỉ không được để trống',
+  ADDRESS_NOT_FOUND: 'Không tìm thấy địa chỉ',
+  ADDRESS_NOT_EMPTY: 'Địa chỉ không được để trống',
+  PHONE_NOT_EMPTY: 'Số điện thoại không được để trống',
+  FULLNAME_NOT_EMPTY: 'Ten người nhận không được để trống',
+  FULLNAME_INVALID_LENGTH: 'Tên người nhận phải có ít nhất 6 - 180 ký tự'
+}
