@@ -2,7 +2,7 @@ import { Router } from 'express'
 import {
   addCartController,
   deleteCartController,
-  getCartController,
+  getCartsController,
   updateCartController
 } from '~/controllers/cart.controller'
 import { accessTokenValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
@@ -20,7 +20,7 @@ const router = Router()
 router.post('/', accessTokenValidator, verifyUserValidator, addCartValidator, wrapHandler(addCartController))
 
 // --- Get Carts ---
-router.get('/', accessTokenValidator, verifyUserValidator, wrapHandler(getCartController))
+router.get('/', accessTokenValidator, wrapHandler(getCartsController))
 
 // --- Delete Cart ---
 router.delete(

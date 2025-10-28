@@ -1,6 +1,6 @@
-import { and, count, eq } from 'drizzle-orm'
+import { and, asc, count, eq } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
-import { carts, products } from '~/db/schema'
+import { brands, carts, products } from '~/db/schema'
 import { AddCartRequestBody, UpdateCartRequestBody } from '~/requests/cart.request'
 
 class CartService {
@@ -44,6 +44,7 @@ class CartService {
           quantity: carts.quantity,
           name: products.name,
           image: products.image,
+          brand: brands.name,
           price: products.price,
           price_before_discount: products.price_before_discount,
           createdAt: carts.createdAt,
@@ -51,7 +52,9 @@ class CartService {
         })
         .from(carts)
         .innerJoin(products, eq(carts.product_id, products.id))
-        .where(eq(carts.user_id, user_id)),
+        .innerJoin(brands, eq(products.brand_id, brands.id))
+        .where(eq(carts.user_id, user_id))
+        .orderBy(asc(carts.createdAt)),
       db.select({ total: count() }).from(carts).where(eq(carts.user_id, user_id))
     ])
     return {
@@ -75,7 +78,7 @@ class CartService {
     const [cart] = await db
       .update(carts)
       .set({ quantity })
-      .where(and(eq(carts.user_id, user_id), eq(carts.id, cart_id), eq(carts.user_id, user_id)))
+      .where(and(eq(carts.user_id, user_id), eq(carts.id, cart_id)))
       .returning()
     return cart
   }

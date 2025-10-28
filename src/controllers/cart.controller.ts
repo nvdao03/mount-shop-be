@@ -25,7 +25,7 @@ export const addCartController = async (
 }
 
 // --- Get carts controller ---
-export const getCartController = async (
+export const getCartsController = async (
   req: Request<ParamsDictionary, any, any>,
   res: Response,
   next: NextFunction
