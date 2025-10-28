@@ -1,3 +1,4 @@
+import { and, desc, eq, ne } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { addresses } from '~/db/schema'
 import { AddAddressRequestBody } from '~/requests/address.request'
@@ -13,6 +14,16 @@ class AddressService {
       })
       .returning()
     return address
+  }
+
+  // --- Get Addresses ---
+  async getAddresses(user_id: number) {
+    const addressList = await db
+      .select()
+      .from(addresses)
+      .where(and(eq(addresses.user_id, user_id), ne(addresses.is_default, true)))
+      .orderBy(desc(addresses.createdAt))
+    return addressList
   }
 }
 

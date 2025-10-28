@@ -23,3 +23,19 @@ export const addAddressController = async (
     }
   })
 }
+
+// --- Get Addresses ---
+export const getAddressesController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await addressService.getAddresses(user_id)
+  return res.status(HTTP_STATUS.OK).json({
+    message: ADDRESS_MESSAGE.GET_ADDRESSES_SUCCESS,
+    data: {
+      addresses: [...result]
+    }
+  })
+}

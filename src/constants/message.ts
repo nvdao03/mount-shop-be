@@ -175,5 +175,6 @@ export const ADDRESS_MESSAGE = {
   ADDRESS_NOT_EMPTY: 'Địa chỉ không được để trống',
   PHONE_NOT_EMPTY: 'Số điện thoại không được để trống',
   FULLNAME_NOT_EMPTY: 'Ten người nhận không được để trống',
-  FULLNAME_INVALID_LENGTH: 'Tên người nhận phải có ít nhất 6 - 180 ký tự'
+  FULLNAME_INVALID_LENGTH: 'Tên người nhận phải có ít nhất 6 - 180 ký tự',
+  GET_ADDRESSES_SUCCESS: 'Lấy danh sách địa chỉ thành công'
 }
