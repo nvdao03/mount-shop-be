@@ -192,5 +192,6 @@ export const ORDER_MESSAGE = {
   ADDRESS_NOT_FOUND: 'Không tìm thấy địa chi',
   ORDER_CART_IDS_INVALID: 'Mảng ID giỏ hàng không hợp lệ',
   ORDER_CART_IDS_NOT_EMPTY: 'Mảng ID giỏ hàng không được để trống',
-  ORDER_CART_IDS_NOT_FOUND: 'Các ID giỏ hàng được truyền xuống không tìm thấy trong giỏ hàng'
+  ORDER_CART_IDS_NOT_FOUND: 'Các ID giỏ hàng được truyền xuống không tìm thấy trong giỏ hàng',
+  GET_ORDERS_SUCCESS: 'Lấy danh sách đơn hàng thành công'
 }

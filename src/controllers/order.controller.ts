@@ -1,6 +1,6 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
-import { AddOrderRequestBody } from '~/requests/order.request'
+import { AddOrderRequestBody, OrderQueryParams } from '~/requests/order.request'
 import { TokenPayload } from '~/requests/auth.request'
 import orderService from '~/services/order.service'
 import { HTTP_STATUS } from '~/constants/httpStatus'
@@ -19,6 +19,31 @@ export const addOrderController = async (
     data: {
       order: {
         ...result
+      }
+    }
+  })
+}
+
+// --- Get Orders ---
+export const getOrdersController = async (
+  req: Request<ParamsDictionary, any, any, OrderQueryParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const page = Number(req.query.page as string) || 1
+  const limit = Number(req.query.limit as string) || 15
+  const { status } = req.query
+  const result = await orderService.getOrders(user_id, status, limit, page)
+  const { orderList, total_page } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: ORDER_MESSAGE.GET_ORDERS_SUCCESS,
+    data: {
+      orders: orderList,
+      pagination: {
+        page,
+        limit,
+        total_page
       }
     }
   })
