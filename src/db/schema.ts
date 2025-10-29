@@ -8,6 +8,7 @@ import { serial, pgEnum, varchar, pgTable, integer } from 'drizzle-orm/pg-core'
 
 // --- Enum ---
 export const verifyEnum = pgEnum('verify_status', ['0', '1'])
+export const orderStatusEnum = pgEnum('order_status', ['processing', 'delivering', 'delivered', 'cancelled'])
 
 // --- Tables ---
 export const roles = pgTable('roles', {
@@ -131,6 +132,32 @@ export const carts = pgTable('carts', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 })
 
+export const orders = pgTable('orders', {
+  id: serial('id').primaryKey(),
+  user_id: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  total_price: integer('total_price').notNull(),
+  status: orderStatusEnum('status').default('processing').notNull(),
+  address_id: integer('address_id')
+    .notNull()
+    .references(() => addresses.id, { onDelete: 'cascade' }),
+  cancel_reason: varchar('cancel_reason', { length: 255 }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
+
+export const order_items = pgTable('order_items', {
+  id: serial('id').primaryKey(),
+  order_id: integer('order_id')
+    .notNull()
+    .references(() => orders.id, { onDelete: 'cascade' }),
+  product_id: integer('product_id')
+    .notNull()
+    .references(() => products.id, { onDelete: 'cascade' }),
+  quantity: integer('quantity').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+})
+
 // --- Types ---
 export type Role = InferModel<typeof roles>
 export type User = InferModel<typeof users>
@@ -140,3 +167,7 @@ export type Brands = InferModel<typeof brands>
 export type BrandsCategories = InferModel<typeof brands_categories>
 export type Products = InferModel<typeof products>
 export type Addresses = InferModel<typeof addresses>
+export type Comments = InferModel<typeof comments>
+export type Carts = InferModel<typeof carts>
+export type Orders = InferModel<typeof orders>
+export type OrderItems = InferModel<typeof order_items>

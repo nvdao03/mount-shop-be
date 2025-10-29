@@ -178,3 +178,19 @@ export const ADDRESS_MESSAGE = {
   FULLNAME_INVALID_LENGTH: 'Tên người nhận phải có ít nhất 6 - 180 ký tự',
   GET_ADDRESSES_SUCCESS: 'Lấy danh sách địa chỉ thành công'
 }
+
+export const ORDER_MESSAGE = {
+  ORDER_ID_NOT_EMPTY: 'ID đơn hàng không được để trống',
+  ORDER_ID_INVALID: 'ID đơn hàng không hợp lệ',
+  ORDER_NOT_FOUND: 'Không tìm thấy đơn hàng',
+  GET_ORDER_SUCCESS: 'Lấy chi tiết đơn hàng thành công',
+  ADD_ORDER_SUCCESS: 'Tạo đơn hàng thành công',
+  ORDER_TOTAL_PRICE_NOT_EMPTY: 'Tổng giá đơn hàng không được để trống',
+  ORDER_TOTAL_PRICE_INVALID: 'Tổng giá đơn hàng không hợp lệ',
+  ADDRESS_ID_INVALID: 'ID địa chỉ không hợp lệ',
+  ADDRESS_ID_NOT_EMPTY: 'ID địa chỉ không được để trống',
+  ADDRESS_NOT_FOUND: 'Không tìm thấy địa chi',
+  ORDER_CART_IDS_INVALID: 'Mảng ID giỏ hàng không hợp lệ',
+  ORDER_CART_IDS_NOT_EMPTY: 'Mảng ID giỏ hàng không được để trống',
+  ORDER_CART_IDS_NOT_FOUND: 'Các ID giỏ hàng được truyền xuống không tìm thấy trong giỏ hàng'
+}
