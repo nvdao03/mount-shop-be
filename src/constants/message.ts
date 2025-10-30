@@ -203,3 +203,7 @@ export const ORDER_MESSAGE = {
   GET_ORDERS_ALL_SUCCESS: 'Lấy danh sách đơn hàng thành công',
   UPDATE_ORDER_SUCCESS: 'Cập nhật đơn hàng thành công'
 }
+
+export const DASHBOARD_MESSAGE = {
+  GET_DASHBOARD_SUCCESS: 'Lấy thống kê thành công'
+}

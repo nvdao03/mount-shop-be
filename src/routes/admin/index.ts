@@ -6,6 +6,7 @@ import categoryRouter from './category.route'
 import commentRouter from './comment.route'
 import roleRouter from './role.route'
 import orderRouter from './order.route'
+import dashboardRouter from './dashboard.route'
 
 const adminRouter = Router()
 
@@ -16,5 +17,6 @@ adminRouter.use('/categories', categoryRouter)
 adminRouter.use('/products', productRouter)
 adminRouter.use('/comments', commentRouter)
 adminRouter.use('/orders', orderRouter)
+adminRouter.use('/dashboard', dashboardRouter)
 
 export default adminRouter
