@@ -194,5 +194,10 @@ export const ORDER_MESSAGE = {
   ORDER_CART_IDS_NOT_EMPTY: 'Mảng ID giỏ hàng không được để trống',
   ORDER_CART_IDS_NOT_FOUND: 'Các ID giỏ hàng được truyền xuống không tìm thấy trong giỏ hàng',
   GET_ORDERS_SUCCESS: 'Lấy danh sách đơn hàng thành công',
-  GET_ORDER_DETAIL_SUCCESS: 'Lấy chi tiết đơn hàng thành công'
+  GET_ORDER_DETAIL_SUCCESS: 'Lấy chi tiết đơn hàng thành công',
+  ORDER_CANCEL_REASON_INVALID: 'Lý do huỷ đơn hàng không hợp lệ',
+  ORDER_CANCEL_REASON_NOT_EMPTY: 'Lý do huỷ đơn hàng không được để trống',
+  ORDER_STATUS_INVALID: 'Trạng thái không hợp lệ',
+  ORDER_STATUS_NOT_EMPTY: 'Trạng thái không được để trống',
+  UPDATE_ORDER_CANCEL_SUCCESS: 'Huỷ đơn hàng thành công'
 }

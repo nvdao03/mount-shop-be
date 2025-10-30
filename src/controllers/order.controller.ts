@@ -1,6 +1,6 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
-import { AddOrderRequestBody, OrderQueryParams } from '~/requests/order.request'
+import { AddOrderRequestBody, OrderQueryParams, UpdateOrderCancelRequestBody } from '~/requests/order.request'
 import { TokenPayload } from '~/requests/auth.request'
 import orderService from '~/services/order.service'
 import { HTTP_STATUS } from '~/constants/httpStatus'
@@ -61,6 +61,24 @@ export const getOrderDetailController = async (
     message: ORDER_MESSAGE.GET_ORDER_DETAIL_SUCCESS,
     data: {
       ...result
+    }
+  })
+}
+
+// --- Update Order Cancel ---
+export const updateOrderCancelController = async (
+  req: Request<ParamsDictionary, any, UpdateOrderCancelRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { order_id } = req.params
+  const result = await orderService.updateOrderCancel(Number(order_id), req.body)
+  return res.status(HTTP_STATUS.OK).json({
+    message: ORDER_MESSAGE.UPDATE_ORDER_CANCEL_SUCCESS,
+    data: {
+      order: {
+        ...result
+      }
     }
   })
 }

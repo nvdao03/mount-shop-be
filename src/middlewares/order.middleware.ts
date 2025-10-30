@@ -116,3 +116,46 @@ export const checkIdOrderValidator = validate(
     ['params']
   )
 )
+
+// --- Update order cancel validator ---
+export const updataOrderCancelValidator = validate(
+  checkSchema(
+    {
+      cancel_reason: {
+        isString: {
+          errorMessage: ORDER_MESSAGE.ORDER_CANCEL_REASON_INVALID
+        },
+        trim: true,
+        custom: {
+          options: (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                message: ORDER_MESSAGE.ORDER_CANCEL_REASON_NOT_EMPTY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            return true
+          }
+        }
+      },
+      status: {
+        isString: {
+          errorMessage: ORDER_MESSAGE.ORDER_STATUS_INVALID
+        },
+        trim: true,
+        custom: {
+          options: (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                message: ORDER_MESSAGE.ORDER_STATUS_NOT_EMPTY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

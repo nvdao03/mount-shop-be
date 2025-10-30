@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, inArray, sql } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
 import { addresses, brands, carts, order_items, orders, products } from '~/db/schema'
-import { AddOrderRequestBody } from '~/requests/order.request'
+import { AddOrderRequestBody, UpdateOrderCancelRequestBody } from '~/requests/order.request'
 
 class OrderService {
   // --- Add Order ---
@@ -157,6 +157,21 @@ class OrderService {
     return {
       order: groupedOrders[0]
     }
+  }
+
+  // --- Update Order Cancel ---
+  async updateOrderCancel(order_id: number, data: UpdateOrderCancelRequestBody) {
+    const { cancel_reason, status } = data
+    const statusCancel = 'cancelled' as 'processing' | 'delivering' | 'delivered' | 'cancelled'
+    const [order] = await db
+      .update(orders)
+      .set({
+        cancel_reason,
+        status: statusCancel
+      })
+      .where(eq(orders.id, order_id))
+      .returning()
+    return order
   }
 }
 

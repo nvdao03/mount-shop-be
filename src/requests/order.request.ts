@@ -9,3 +9,8 @@ export interface OrderQueryParams {
   page: string
   status: string
 }
+
+export interface UpdateOrderCancelRequestBody {
+  cancel_reason: string
+  status: string
+}
