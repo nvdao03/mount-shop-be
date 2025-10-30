@@ -14,3 +14,15 @@ export interface UpdateOrderCancelRequestBody {
   cancel_reason: string
   status: string
 }
+
+export interface AdminGetOrdersQueryParams {
+  limit: string
+  page: string
+  search?: string
+  status?: string
+}
+
+export interface UpdateOrderRequestBody {
+  cancel_reason: string
+  status: string
+}

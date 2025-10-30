@@ -1,7 +1,7 @@
-import { and, asc, count, desc, eq, inArray, sql } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, inArray, sql } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
-import { addresses, brands, carts, order_items, orders, products } from '~/db/schema'
-import { AddOrderRequestBody, UpdateOrderCancelRequestBody } from '~/requests/order.request'
+import { addresses, brands, carts, order_items, orders, products, users } from '~/db/schema'
+import { AddOrderRequestBody, UpdateOrderCancelRequestBody, UpdateOrderRequestBody } from '~/requests/order.request'
 
 class OrderService {
   // --- Add Order ---
@@ -168,6 +168,63 @@ class OrderService {
       .set({
         cancel_reason,
         status: statusCancel
+      })
+      .where(eq(orders.id, order_id))
+      .returning()
+    return order
+  }
+
+  // --- Admin Get Orders ---
+  async getOrdersAll(limit: number, page: number, search: number, status: string) {
+    const statusOrder = status as 'processing' | 'delivering' | 'delivered' | 'cancelled'
+    const conditions: any[] = []
+    const offset = limit * (page - 1)
+    if (search) {
+      conditions.push(eq(orders.id, search))
+    }
+    if (status) {
+      conditions.push(eq(orders.status, statusOrder))
+    }
+    const [orderList, [{ total }]] = await Promise.all([
+      db
+        .select({
+          id: orders.id,
+          full_name: addresses.full_name,
+          avatar: users.avatar,
+          total_price: orders.total_price,
+          status: orders.status,
+          createdAt: orders.createdAt,
+          updatedAt: orders.updatedAt
+        })
+        .from(orders)
+        .innerJoin(users, eq(orders.user_id, users.id))
+        .innerJoin(addresses, eq(orders.address_id, addresses.id))
+        .where(and(...conditions))
+        .orderBy(desc(orders.createdAt))
+        .limit(limit)
+        .offset(offset),
+      db
+        .select({ total: count() })
+        .from(orders)
+        .innerJoin(users, eq(orders.user_id, users.id))
+        .innerJoin(addresses, eq(orders.address_id, addresses.id))
+        .where(and(...conditions))
+    ])
+    const total_page = Math.ceil(Number(total) / limit)
+    return {
+      orderList,
+      total_page
+    }
+  }
+
+  // --- Admin Update Order ---
+  async updateOrder(order_id: number, data: UpdateOrderRequestBody) {
+    const { status } = data
+    const statusOrder = status as 'processing' | 'delivering' | 'delivered' | 'cancelled'
+    const [order] = await db
+      .update(orders)
+      .set({
+        status: statusOrder
       })
       .where(eq(orders.id, order_id))
       .returning()

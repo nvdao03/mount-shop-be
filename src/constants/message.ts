@@ -199,5 +199,7 @@ export const ORDER_MESSAGE = {
   ORDER_CANCEL_REASON_NOT_EMPTY: 'Lý do huỷ đơn hàng không được để trống',
   ORDER_STATUS_INVALID: 'Trạng thái không hợp lệ',
   ORDER_STATUS_NOT_EMPTY: 'Trạng thái không được để trống',
-  UPDATE_ORDER_CANCEL_SUCCESS: 'Huỷ đơn hàng thành công'
+  UPDATE_ORDER_CANCEL_SUCCESS: 'Huỷ đơn hàng thành công',
+  GET_ORDERS_ALL_SUCCESS: 'Lấy danh sách đơn hàng thành công',
+  UPDATE_ORDER_SUCCESS: 'Cập nhật đơn hàng thành công'
 }

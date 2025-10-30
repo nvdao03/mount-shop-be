@@ -15,16 +15,10 @@ const router = Router()
 router.post('/', accessTokenValidator, verifyUserValidator, addOrderValidator, wrapHandler(addOrderController))
 
 // --- Get Orders ---
-router.get('/', accessTokenValidator, verifyUserValidator, wrapHandler(getOrdersController))
+router.get('/', accessTokenValidator, wrapHandler(getOrdersController))
 
 // --- Get Order Detail ---
-router.get(
-  '/:order_id',
-  accessTokenValidator,
-  verifyUserValidator,
-  checkIdOrderValidator,
-  wrapHandler(getOrderDetailController)
-)
+router.get('/:order_id', accessTokenValidator, checkIdOrderValidator, wrapHandler(getOrderDetailController))
 
 // --- Update Order Cancel ---
 router.put(

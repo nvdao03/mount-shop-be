@@ -1,6 +1,12 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
-import { AddOrderRequestBody, OrderQueryParams, UpdateOrderCancelRequestBody } from '~/requests/order.request'
+import {
+  AddOrderRequestBody,
+  AdminGetOrdersQueryParams,
+  OrderQueryParams,
+  UpdateOrderCancelRequestBody,
+  UpdateOrderRequestBody
+} from '~/requests/order.request'
 import { TokenPayload } from '~/requests/auth.request'
 import orderService from '~/services/order.service'
 import { HTTP_STATUS } from '~/constants/httpStatus'
@@ -75,6 +81,48 @@ export const updateOrderCancelController = async (
   const result = await orderService.updateOrderCancel(Number(order_id), req.body)
   return res.status(HTTP_STATUS.OK).json({
     message: ORDER_MESSAGE.UPDATE_ORDER_CANCEL_SUCCESS,
+    data: {
+      order: {
+        ...result
+      }
+    }
+  })
+}
+
+// --- Admin Get Orders ---
+export const getOrdersAllController = async (
+  req: Request<ParamsDictionary, any, any, AdminGetOrdersQueryParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  const page = Number(req.query.page as string) || 1
+  const limit = Number(req.query.limit as string) || 15
+  const search = Number(req.query.search as string)
+  const status = req.query.status as string
+  const result = await orderService.getOrdersAll(limit, page, search, status)
+  const { total_page, orderList } = result
+  return res.status(HTTP_STATUS.OK).json({
+    message: ORDER_MESSAGE.GET_ORDERS_ALL_SUCCESS,
+    data: {
+      orders: orderList,
+      pagination: {
+        page,
+        limit,
+        total_page
+      }
+    }
+  })
+}
+
+export const updateOrderController = async (
+  req: Request<ParamsDictionary, any, UpdateOrderRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { order_id } = req.params
+  const result = await orderService.updateOrder(Number(order_id), req.body)
+  return res.status(HTTP_STATUS.OK).json({
+    message: ORDER_MESSAGE.UPDATE_ORDER_SUCCESS,
     data: {
       order: {
         ...result

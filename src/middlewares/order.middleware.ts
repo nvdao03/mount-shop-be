@@ -159,3 +159,29 @@ export const updataOrderCancelValidator = validate(
     ['body']
   )
 )
+
+// --- Admin Update Order ---
+export const updateOrderValidator = validate(
+  checkSchema(
+    {
+      status: {
+        isString: {
+          errorMessage: ORDER_MESSAGE.ORDER_STATUS_INVALID
+        },
+        trim: true,
+        custom: {
+          options: (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                message: ORDER_MESSAGE.ORDER_STATUS_NOT_EMPTY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
