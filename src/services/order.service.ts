@@ -1,6 +1,6 @@
-import { and, asc, count, desc, eq, inArray } from 'drizzle-orm'
+import { and, asc, count, desc, eq, inArray, sql } from 'drizzle-orm'
 import { db } from '~/configs/postgreSQL.config'
-import { brands, carts, order_items, orders, products } from '~/db/schema'
+import { addresses, brands, carts, order_items, orders, products } from '~/db/schema'
 import { AddOrderRequestBody } from '~/requests/order.request'
 
 class OrderService {
@@ -16,7 +16,16 @@ class OrderService {
     }))
     await Promise.all([
       await db.insert(order_items).values(orderItemsData),
-      await db.delete(carts).where(inArray(carts.id, cart_ids))
+      await db.delete(carts).where(inArray(carts.id, cart_ids)),
+      ...cartList.map((cart) =>
+        db
+          .update(products)
+          .set({
+            stock: sql`${products.stock} - ${cart.quantity}`
+          })
+          .where(eq(products.id, cart.product_id as number))
+          .returning()
+      )
     ])
     return order
   }
@@ -38,6 +47,7 @@ class OrderService {
           image: products.image,
           brand: brands.name,
           name: products.name,
+          product_id: products.id,
           price: products.price,
           status: orders.status,
           total_price: orders.total_price,
@@ -74,6 +84,7 @@ class OrderService {
           }
         }
         acc[order.id].items.push({
+          product_id: order.product_id,
           image: order.image,
           brand: order.brand,
           name: order.name,
@@ -87,6 +98,64 @@ class OrderService {
     return {
       orderList: groupedOrders,
       total_page
+    }
+  }
+
+  async getOrderDetail(order_id: number) {
+    const order = await db
+      .select({
+        id: orders.id,
+        image: products.image,
+        brand: brands.name,
+        name: products.name,
+        cancel_reason: orders.cancel_reason,
+        price: products.price,
+        product_id: products.id,
+        address: addresses.address,
+        full_name: addresses.full_name,
+        phone: addresses.phone,
+        status: orders.status,
+        total_price: orders.total_price,
+        quantity: order_items.quantity,
+        createdAt: orders.createdAt,
+        updatedAt: orders.updatedAt
+      })
+      .from(orders)
+      .innerJoin(order_items, eq(orders.id, order_items.order_id))
+      .innerJoin(products, eq(order_items.product_id, products.id))
+      .innerJoin(addresses, eq(orders.address_id, addresses.id))
+      .innerJoin(brands, eq(products.brand_id, brands.id))
+      .where(eq(orders.id, order_id))
+    // --- Gom nhóm Orders ---
+    const groupedOrders = Object.values(
+      order.reduce((acc: any, order: any) => {
+        if (!acc[order.id]) {
+          acc[order.id] = {
+            id: order.id,
+            status: order.status,
+            cancel_reason: order.cancel_reason,
+            total_price: order.total_price,
+            address: order.address,
+            full_name: order.full_name,
+            phone: order.phone,
+            createdAt: order.createdAt,
+            updatedAt: order.updatedAt,
+            items: []
+          }
+        }
+        acc[order.id].items.push({
+          product_id: order.product_id,
+          image: order.image,
+          brand: order.brand,
+          name: order.name,
+          price: order.price,
+          quantity: order.quantity
+        })
+        return acc
+      }, {})
+    )
+    return {
+      order: groupedOrders[0]
     }
   }
 }

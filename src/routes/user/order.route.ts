@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { addOrderController, getOrdersController } from '~/controllers/order.controller'
+import { addOrderController, getOrderDetailController, getOrdersController } from '~/controllers/order.controller'
 import { accessTokenValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
-import { addOrderValidator } from '~/middlewares/order.middleware'
+import { addOrderValidator, checkIdOrderValidator } from '~/middlewares/order.middleware'
 import { wrapHandler } from '~/utils/wrapHanler'
 
 const router = Router()
@@ -11,5 +11,14 @@ router.post('/', accessTokenValidator, verifyUserValidator, addOrderValidator, w
 
 // --- Get Orders ---
 router.get('/', accessTokenValidator, verifyUserValidator, wrapHandler(getOrdersController))
+
+// --- Get Order Detail ---
+router.get(
+  '/:order_id',
+  accessTokenValidator,
+  verifyUserValidator,
+  checkIdOrderValidator,
+  wrapHandler(getOrderDetailController)
+)
 
 export default router

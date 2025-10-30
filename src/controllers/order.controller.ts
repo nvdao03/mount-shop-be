@@ -48,3 +48,19 @@ export const getOrdersController = async (
     }
   })
 }
+
+// --- Get Order Detail ---
+export const getOrderDetailController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { order_id } = req.params
+  const result = await orderService.getOrderDetail(Number(order_id))
+  return res.status(HTTP_STATUS.OK).json({
+    message: ORDER_MESSAGE.GET_ORDER_DETAIL_SUCCESS,
+    data: {
+      ...result
+    }
+  })
+}

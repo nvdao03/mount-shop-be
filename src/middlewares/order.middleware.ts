@@ -3,7 +3,7 @@ import { checkSchema } from 'express-validator'
 import { db } from '~/configs/postgreSQL.config'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { ORDER_MESSAGE } from '~/constants/message'
-import { addresses, carts } from '~/db/schema'
+import { addresses, carts, orders } from '~/db/schema'
 import { ErrorStatus } from '~/utils/Errors'
 import { validate } from '~/utils/validation'
 
@@ -81,5 +81,38 @@ export const addOrderValidator = validate(
       }
     },
     ['body']
+  )
+)
+
+// --- Check order id validator ---
+export const checkIdOrderValidator = validate(
+  checkSchema(
+    {
+      order_id: {
+        isInt: {
+          errorMessage: ORDER_MESSAGE.ORDER_ID_INVALID
+        },
+        toInt: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                message: ORDER_MESSAGE.ORDER_ID_NOT_EMPTY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            const [order] = await db.select().from(orders).where(eq(orders.id, value)).limit(1)
+            if (!order) {
+              throw new ErrorStatus({
+                message: ORDER_MESSAGE.ORDER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['params']
   )
 )
