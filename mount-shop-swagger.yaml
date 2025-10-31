@@ -1,0 +1,956 @@
+openapi: 3.0.0
+info:
+  title: Mount Shop
+  version: 1.0.0
+servers:
+  - url: https://mount-shop-be.onrender.com
+components:
+  securitySchemes:
+    noauthAuth:
+      type: http
+      scheme: noauth
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+  - name: Products
+  - name: Categories
+  - name: Brands
+  - name: Carts
+  - name: Media
+  - name: User
+  - name: Comments
+  - name: Addresses
+  - name: Order
+  - name: Dashboard
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                full_name: Nguyễn Văn Đạo
+                email: nguyenvandao0307+26@gmail.com
+                password: '12345678'
+                confirm_password: '12345678'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: nguyenvandao0307@gmail.com
+                password: '1234567'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                refresh_token: '{{refresh_token}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/change-password:
+    post:
+      tags:
+        - Auth
+      summary: Change Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                current_password: '123456'
+                new_password: '12345678'
+                confirm_password: '12345678'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Forgot Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: nguyenvandao0307@gmail.com
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/verify-forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Verify Forgot Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                forgot_password_token: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ0b2tlbl90eXBlIjoyLCJ2ZXJpZnkiOiIxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzU5Njc4ODI5LCJleHAiOjE3NjAyODM2Mjl9.Ugf3lBCwmhkzvu4BA1ydcRVoIA91xMqXZrf-fZsI6CM
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/reset-password:
+    post:
+      tags:
+        - Auth
+      summary: Reset Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                forgot_password_token: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ0b2tlbl90eXBlIjoyLCJ2ZXJpZnkiOiIxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzU5Njc4ODI5LCJleHAiOjE3NjAyODM2Mjl9.Ugf3lBCwmhkzvu4BA1ydcRVoIA91xMqXZrf-fZsI6CM
+                password: '12345678'
+                confirm_password: '12345678'
+      security:
+        - noauthAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/verify-email:
+    post:
+      tags:
+        - Auth
+      summary: Verify Email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email_verify_token: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo3LCJ0b2tlbl90eXBlIjozLCJ2ZXJpZnkiOiIwIiwicm9sZSI6ImN1c3RvbWVyIiwiaWF0IjoxNzU5NjUyNzE1LCJleHAiOjE3NjAyNTc1MTV9.bJ-Lo4ahj_5ctVplZGvT0HTDX7cgDvjTy2tAd5od9aA
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/refresh-token:
+    post:
+      tags:
+        - Auth
+      summary: Refresh Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                refresh_token: '{{refresh_token}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/products:
+    post:
+      tags:
+        - Products
+      summary: Add Product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Áo Polo Cổ V Dệt Kim Cao Cấp Phong Cách Hàn Quốc SUGAL TOP 005
+                image: >-
+                  https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/podtesa344qopavycqlzv5tzd.png
+                images:
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/podtesa344qopavycqlzv5tzd.png
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/yiifln8rsizpxd8q2fdvw6fzk.png
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/u2lnicwz2ns6v5ub1zd81b4wx.png
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/vbfdcf17jvq1oswad0d4t05ae.png
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/s1gi39suba29f623hu0hjc0mv.png
+                description: >-
+                  <p><strong>Áo Polo Cổ V Dệt Kim Cao Cấp Phong Cách Hàn Quốc
+                  SUGAL TOP 005</strong></p><p>Khám phá phong cách thời trang
+                  hiện đại với mẫu áo polo cổ V dệt kim cao cấp từ thương hiệu
+                  <strong>SUGAL</strong>. Thiết kế tinh tế, mang hơi hướng Hàn
+                  Quốc giúp bạn nổi bật và thanh lịch trong mọi hoàn
+                  cảnh.</p><ul><li>Chất liệu: Dệt kim cao cấp, mềm mịn, thoáng
+                  mát và co giãn tốt.</li><li>Kiểu dáng: Cổ V thời thượng, tôn
+                  dáng và tạo cảm giác trẻ trung.</li><li>Màu sắc: Trung tính,
+                  dễ phối đồ, phù hợp với nhiều phong cách.</li><li>Ứng dụng:
+                  Phù hợp khi đi làm, đi chơi, hẹn hò hay dạo
+                  phố.</li></ul><p>Đường may tinh xảo, form áo chuẩn giúp tôn
+                  lên vẻ lịch lãm, tự tin của phái mạnh. Dễ dàng kết hợp với
+                  quần âu, quần jeans hoặc quần short để tạo nên phong cách
+                  riêng của bạn.</p><p><strong>SUGAL TOP 005</strong> – lựa chọn
+                  hoàn hảo cho những ai yêu thích sự thanh lịch, hiện đại và đậm
+                  chất Hàn Quốc.</p><hr /><h4>🎯 Cam kết chất
+                  lượng</h4><ul><li>Sản phẩm 100% giống mô tả và hình
+                  ảnh.</li><li>Chất liệu cao cấp, được kiểm tra kỹ lưỡng trước
+                  khi giao hàng.</li><li>Đảm bảo hàng mới, nguyên tem nhãn, chưa
+                  qua sử dụng.</li></ul><h4>🔁 Chính sách đổi trả</h4><ul><li>Hỗ
+                  trợ đổi trả trong vòng <strong>7 ngày</strong> kể từ khi nhận
+                  hàng.</li><li>Áp dụng với sản phẩm còn nguyên tag, chưa giặt
+                  hoặc qua sử dụng.</li><li>Nếu sản phẩm lỗi từ nhà sản xuất,
+                  chúng tôi sẽ <strong>đổi mới 100%</strong>.</li><li>Khách hàng
+                  vui lòng quay video khi mở hàng để được hỗ trợ tốt
+                  nhất.</li></ul><p><em>Cảm ơn bạn đã tin tưởng lựa chọn sản
+                  phẩm của <strong>SUGAL</strong>. Chúng tôi luôn nỗ lực mang
+                  đến cho bạn trải nghiệm mua sắm hài lòng nhất!</em></p>
+                price_before_discount: 240000
+                price: 169000
+                rating: '4.0'
+                sold: 200
+                stock: 121
+                category_id: '7'
+                brand_id: '17'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/products/8:
+    put:
+      tags:
+        - Products
+      summary: Update Product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Áo Polo Cổ V Dệt Kim Cao Cấp Phong Cách Hàn Quốc SUGAL TOP 005
+                image: >-
+                  https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/podtesa344qopavycqlzv5tzd.png
+                images:
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/podtesa344qopavycqlzv5tzd.png
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/yiifln8rsizpxd8q2fdvw6fzk.png
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/u2lnicwz2ns6v5ub1zd81b4wx.png
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/vbfdcf17jvq1oswad0d4t05ae.png
+                  - >-
+                    https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/s1gi39suba29f623hu0hjc0mv.png
+                description: >-
+                  <p><strong>Áo Polo Cổ V Dệt Kim Cao Cấp Phong Cách Hàn Quốc
+                  SUGAL TOP 005</strong></p><p>Khám phá phong cách thời trang
+                  hiện đại với mẫu áo polo cổ V dệt kim cao cấp từ thương hiệu
+                  <strong>SUGAL</strong>. Thiết kế tinh tế, mang hơi hướng Hàn
+                  Quốc giúp bạn nổi bật và thanh lịch trong mọi hoàn
+                  cảnh.</p><ul><li>Chất liệu: Dệt kim cao cấp, mềm mịn, thoáng
+                  mát và co giãn tốt.</li><li>Kiểu dáng: Cổ V thời thượng, tôn
+                  dáng và tạo cảm giác trẻ trung.</li><li>Màu sắc: Trung tính,
+                  dễ phối đồ, phù hợp với nhiều phong cách.</li><li>Ứng dụng:
+                  Phù hợp khi đi làm, đi chơi, hẹn hò hay dạo
+                  phố.</li></ul><p>Đường may tinh xảo, form áo chuẩn giúp tôn
+                  lên vẻ lịch lãm, tự tin của phái mạnh. Dễ dàng kết hợp với
+                  quần âu, quần jeans hoặc quần short để tạo nên phong cách
+                  riêng của bạn.</p><p><strong>SUGAL TOP 005</strong> – lựa chọn
+                  hoàn hảo cho những ai yêu thích sự thanh lịch, hiện đại và đậm
+                  chất Hàn Quốc.</p><hr /><h4>🎯 Cam kết chất
+                  lượng</h4><ul><li>Sản phẩm 100% giống mô tả và hình
+                  ảnh.</li><li>Chất liệu cao cấp, được kiểm tra kỹ lưỡng trước
+                  khi giao hàng.</li><li>Đảm bảo hàng mới, nguyên tem nhãn, chưa
+                  qua sử dụng.</li></ul><h4>🔁 Chính sách đổi trả</h4><ul><li>Hỗ
+                  trợ đổi trả trong vòng <strong>7 ngày</strong> kể từ khi nhận
+                  hàng.</li><li>Áp dụng với sản phẩm còn nguyên tag, chưa giặt
+                  hoặc qua sử dụng.</li><li>Nếu sản phẩm lỗi từ nhà sản xuất,
+                  chúng tôi sẽ <strong>đổi mới 100%</strong>.</li><li>Khách hàng
+                  vui lòng quay video khi mở hàng để được hỗ trợ tốt
+                  nhất.</li></ul><p><em>Cảm ơn bạn đã tin tưởng lựa chọn sản
+                  phẩm của <strong>SUGAL</strong>. Chúng tôi luôn nỗ lực mang
+                  đến cho bạn trải nghiệm mua sắm hài lòng nhất!</em></p>
+                price_before_discount: 169000
+                price: 249000
+                rating: '4.0'
+                sold: 200
+                stock: 121
+                category_id: '7'
+                brand_id: '17'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/products/5:
+    delete:
+      tags:
+        - Products
+      summary: Delete Product
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/products/268:
+    get:
+      tags:
+        - Products
+      summary: Get Product
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/products:
+    get:
+      tags:
+        - Products
+      summary: Get Products
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '2'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '15'
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: brands
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+          example: Bộ
+        - name: min_price
+          in: query
+          schema:
+            type: string
+        - name: max_price
+          in: query
+          schema:
+            type: string
+        - name: rating
+          in: query
+          schema:
+            type: string
+        - name: order
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/categories:
+    post:
+      tags:
+        - Categories
+      summary: Add Category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Đồng hồ
+                image: >-
+                  https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/ad62a0dowi8orce8g95zlyxra.png
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/categories/15:
+    put:
+      tags:
+        - Categories
+      summary: Update Category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Mưa
+                image: >-
+                  https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/on98ijx2s1x3b7efgrsd6bsbe.png
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/categories/2:
+    delete:
+      tags:
+        - Categories
+      summary: Delete Category
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/categories/4:
+    get:
+      tags:
+        - Categories
+      summary: Get Category
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/categories/3/brands:
+    get:
+      tags:
+        - Categories
+      summary: Get Brands By Category Id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/categories:
+    get:
+      tags:
+        - Categories
+      summary: Get Categories
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '15'
+        - name: search
+          in: query
+          schema:
+            type: string
+          example: Đồng Hồ
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/brands:
+    post:
+      tags:
+        - Brands
+      summary: Add Brand
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Rolex
+                image: >-
+                  https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/meiq11g0s90pvd4h6s95kq3mc.png
+                category_id: '12'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Brands
+      summary: Get Brands
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '15'
+        - name: search
+          in: query
+          schema:
+            type: string
+          example: LG
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/brands/1:
+    put:
+      tags:
+        - Brands
+      summary: Update Brand
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: SamSung
+                image: >-
+                  https://mount-shop-s3.s3.ap-southeast-1.amazonaws.com/images/odeupcfw84ba3aaj9234upytw.png
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Brands
+      summary: Delele Brand
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/brands/3:
+    get:
+      tags:
+        - Brands
+      summary: Get Brand
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/carts:
+    post:
+      tags:
+        - Carts
+      summary: Add Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                product_id: 17
+                quantity: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Carts
+      summary: Get Carts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/carts/1:
+    delete:
+      tags:
+        - Carts
+      summary: Delete Cart
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/carts/3:
+    put:
+      tags:
+        - Carts
+      summary: Update Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                quantity: 2
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/media/upload-image:
+    post:
+      tags:
+        - Media
+      summary: Upload Image
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/profile:
+    get:
+      tags:
+        - User
+      summary: Get Profile
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - User
+      summary: Update Profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                avatar: ''
+                full_name: Văn Đạo
+                phone: '0985732825'
+                address: Khoái Châu - Hưng Yên
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/users:
+    get:
+      tags:
+        - User
+      summary: Get Users
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '15'
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - User
+      summary: Update User Role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                user_id: '39'
+                role_id: '2'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/users/38:
+    delete:
+      tags:
+        - User
+      summary: Delete User
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/comments:
+    post:
+      tags:
+        - Comments
+      summary: Add Comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                product_id: 24
+                content: TV đẹp quá bạn !!!
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/comments/1:
+    delete:
+      tags:
+        - Comments
+      summary: Delete Comment
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/comments/61:
+    get:
+      tags:
+        - Comments
+      summary: Get Comment Product
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/comments:
+    get:
+      tags:
+        - Comments
+      summary: Get Comments All
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '15'
+        - name: search
+          in: query
+          schema:
+            type: string
+          example: Đồng
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/addresses:
+    post:
+      tags:
+        - Addresses
+      summary: Add Address
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                full_name: Trần Thị Mai
+                phone: '0988877722'
+                address: Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Addresses
+      summary: Get Addresses
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/orders:
+    post:
+      tags:
+        - Order
+      summary: Add Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                total_price: 202000
+                address_id: 49
+                cart_ids:
+                  - 34
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Order
+      summary: Get Orders
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '15'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/orders/3:
+    get:
+      tags:
+        - Order
+      summary: Get Oder Detail
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/orders/21:
+    put:
+      tags:
+        - Order
+      summary: Update Order Cancel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: cancelled
+                cancel_reason: Tôi muốn đổi sản phẩm khác
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/orders:
+    get:
+      tags:
+        - Order
+      summary: Get Orders All
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '15'
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+          example: delivered
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/orders/15:
+    put:
+      tags:
+        - Order
+      summary: Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: delivered
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/admin/dashboard:
+    get:
+      tags:
+        - Dashboard
+      summary: DashBoard
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

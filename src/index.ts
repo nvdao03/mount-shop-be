@@ -7,6 +7,7 @@ import errorHandler from '~/middlewares/error.middleware'
 import { initFolder } from '~/utils/file'
 import path from 'path'
 import { UPLOAD_IMAGE } from '~/constants/dir'
+import limiter from '~/configs/rateLimit.config'
 
 const PORT = process.env.PORT || 4000
 
@@ -14,7 +15,12 @@ const app = express()
 
 // --- Middlewares ---
 app.use(express.json())
-app.use(cors())
+app.use(limiter)
+app.use(
+  cors({
+    origin: [process.env.CLIENT_LOCAL_HOST_URL as string, process.env.CLIENT_PRODUCTION_URL as string]
+  })
+)
 
 // --- Init folder ---
 initFolder()
