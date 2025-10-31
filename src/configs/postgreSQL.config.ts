@@ -3,8 +3,17 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import * as schema from '../db/schema'
 import './env.config'
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ...(isProduction
+    ? {
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
+    : {})
 })
 
 export const db = drizzle(pool, { schema })
